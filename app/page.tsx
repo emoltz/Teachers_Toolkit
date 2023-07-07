@@ -3,7 +3,7 @@ export default function Home() {
         <>
             <div className={"p-3 text-2xl"}>
 
-            Hello World
+                Hello World!
             </div>
         </>
     )
