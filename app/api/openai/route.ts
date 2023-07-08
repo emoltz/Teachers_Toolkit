@@ -15,24 +15,30 @@ export async function POST(req: NextRequest) {
     let prompt = "Rewrite the following at a " + gradeLevel + " reading level: " + 'in ' + language;
     console.log(prompt)
     prompt += body.prompt;
-try{
+    try {
 
-    const aiResponse = await openai.createCompletion(
-        {
-            model: "text-davinci-002",
-            prompt: prompt,
-            max_tokens: 3000,
-            temperature: 0.0,
+        const aiResponse = await openai.createChatCompletion(
+            {
+                model: "gpt-4",
+                messages: [
+                    {
+                        role: "user",
+                        content: prompt,
+                    }
+                ],
+                max_tokens: 2000,
+                temperature: 0.9,
+
+            }
+        );
+        if (!aiResponse || !aiResponse.data || !aiResponse.data.choices || !aiResponse.data.choices[0] || !aiResponse.data.choices[0].message || !aiResponse.data.choices[0].message.content) {
+            return NextResponse.json({aiResponse: "[No text returned from AI]"})
         }
-    );
-    const text = aiResponse.data.choices[0].text;
-    if (!text){
-        return NextResponse.json({error: "No text returned from OpenAI"})
+        const text = aiResponse.data.choices[0].message.content;
+        return NextResponse.json({aiResponse: text}); // What do I put inside the parentheses?
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json({message: "catch block", error: error, prompt: prompt})
     }
-    return NextResponse.json({text});
-} catch(error){
-    console.log(error);
-    return NextResponse.json({error: error, prompt: prompt})
-}
 
 }
