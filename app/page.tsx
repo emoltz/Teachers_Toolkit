@@ -1,5 +1,6 @@
 
-
+import Link from 'next/link';
+import {Button} from '../components/ui/button';
 export default function Home() {
     return (
         <>
@@ -9,9 +10,12 @@ export default function Home() {
             </div>
             <div className={"p-3"}>
 
-                <button className={"p-3 border rounded bg-red-100"}>
-                    <a href={"/profile"}>Log In</a>
-                </button>
+                <Button>
+                    <Link href={"/profile"}>
+                        Hello
+                    </Link>
+
+                </Button>
             </div>
         </>
     )
