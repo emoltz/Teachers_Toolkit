@@ -1,3 +1,5 @@
+import {Button} from "@/components/ui/button";
+
 export function NavBar() {
     return (
         <nav className={"flex items-center justify-between flex-wrap bg-gray-400 p-6"}>
@@ -5,10 +7,11 @@ export function NavBar() {
                 <span className={"font-semibold text-xl tracking-right"}>Teacher's Toolkit</span>
             </div>
             <div className={""}>
-                <button id={"menuButton"}
-                        className={"flex items-center px-3 py-2 border rounded text-grey-200 border-grey-400 hover:text-white hover:border-white"}>
+                <Button id={"menuButton"}
+                        variant={"outline"}
+                >
                     Log In
-                </button>
+                </Button>
             </div>
 
 

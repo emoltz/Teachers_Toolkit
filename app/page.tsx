@@ -1,22 +1,15 @@
-import Link from 'next/link';
+"use client";
 import {Button} from '@/components/ui/button';
+import {Textarea} from '@/components/ui/textarea';
 
 export default function Home() {
     return (
         <>
-            <div className={"p-3 text-2xl"}>
-
-                Hello World!
-            </div>
-            <div className={"p-3"}>
-
-                <Link href={"/profile"}>
-                    <Button>
-                        Hello
-                    </Button>
-                </Link>
-
+            <div className="grid w-full gap-2">
+                <Textarea placeholder="Type your message here."/>
+                <Button>Send message</Button>
             </div>
         </>
+
     )
 }
