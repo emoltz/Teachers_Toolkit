@@ -5,7 +5,6 @@ import {Inter} from 'next/font/google'
 import {Analytics} from '@vercel/analytics/react';
 import {NavBar} from "@/app/NavBar";
 import {ReactNode} from "react";
-import {AuthProvider} from "./context";
 
 
 const inter = Inter({subsets: ['latin']})
@@ -26,7 +25,7 @@ export default function RootLayout({
     return (
         <html lang="en">
 
-        <AuthProvider>
+
             <body className={inter.className}>
 
             <NavBar/>
@@ -37,7 +36,7 @@ export default function RootLayout({
             </div>
 
             </body>
-        </AuthProvider>
+
         <Analytics/>
         </html>
     )

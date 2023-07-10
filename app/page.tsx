@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 import ThreeColumn from "@/components/layouts/ThreeColumn";
 
 export default function Home() {
