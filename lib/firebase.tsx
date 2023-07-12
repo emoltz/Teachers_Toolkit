@@ -1,9 +1,6 @@
 import {initializeApp} from "firebase/app";
-import dynamic from 'next/dynamic';
 import {getAnalytics} from "firebase/analytics";
-import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
-import {collection, addDoc, doc, getDocs, getFirestore, setDoc, query, where} from 'firebase/firestore';
-import {useEffect, useState} from "react";
+import {Auth, getAuth, GoogleAuthProvider} from 'firebase/auth';
 
 const firebaseConfig = {
     //load apiKey from .env file
@@ -18,25 +15,18 @@ const firebaseConfig = {
 
 
 let app;
-let auth;
+let auth: Auth;
 let analytics;
+let provider: GoogleAuthProvider;
 
 if (typeof window !== 'undefined') {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     analytics = getAnalytics(app);
+    provider = new GoogleAuthProvider();
 }
 
-export {app, auth, analytics};
+export {app, auth, analytics, provider};
 
-export async function saveUserToFirebase(user: any) {
-    const {uid, email, displayName, photoURL} = user;
-    const ref = doc(getFirestore(), 'users', uid);
-    const data = {
-        uid,
-        email,
-        displayName,
-        photoURL,
-    };
-    await setDoc(ref, data);
-}
+// TODO authentication
+// TODO save user to firestore

@@ -1,9 +1,7 @@
 export default function page() {
     return (
-
         <>
-            Profile Page
-
+            About me
         </>
     )
 }
