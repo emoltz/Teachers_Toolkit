@@ -4,26 +4,13 @@ import Link from "next/link";
 export function NavBar() {
     const routes = [
         {
-            name: "Home",
-            path: "/"
-        },
-        {
             name: "About",
             path: "/about"
         },
-        {
-            name: "Contact",
-            path: "/contact"
-
-        },
-        {
-            name: "Login",
-            path: "/login"
-        }
     ]
 
     return (
-        <nav className={"flex items-center justify-between flex-wrap bg-black p-6"}>
+        <nav className={"flex items-center flex-wrap bg-gray-900 p-6"}>
             <div className={"cursor-pointer flex items-center flex-shrink-0 text-white mr-6"}>
                 <span className={"font-display text-xl tracking-right"}>
                     <Link href={"/"}>
@@ -36,6 +23,17 @@ export function NavBar() {
                     </span>
                 </span>
             </div>
+            <span className={"flex-grow"}/>
+            {routes.map((route) => (
+                <div>
+                    <Button className={"text-white"}>
+                        <Link href={route.path}>
+                            {route.name}
+                        </Link>
+                    </Button>
+                </div>
+            ))}
+
             <div className={""}>
                 <Button id={"menuButton"}
                         variant={"outline"}

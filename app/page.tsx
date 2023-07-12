@@ -1,23 +1,30 @@
 "use client";
-import AutoDiffDialogue from "@/app/autodiff/AutoDiffDialogue";
-import {useState} from "react";
+import Link from "next/link";
+import {Button} from "@/components/ui/button";
 
 export default function Home() {
-    const [result, setResult] = useState("");
+    const tools = [
+        {
+            name: "AutoDiff",
+            path: "/autodiff",
+            description: "Automatically scaffold text to a lower grade level."
+        }
+    ]
 
     return (
         <>
-            <AutoDiffDialogue/>
+            {tools.map((tool) => (
+                <div>
+                    <Button className={"text-white"}>
+                        <Link href={tool.path}>
+                            {tool.name}
+                        </Link>
+                    </Button>
+                    {tool.description}
+                </div>
+            ))}
+
         </>
 
     )
-}
-
-function Result(){
-        return (
-            <>
-                    Result
-
-            </>
-        )
 }

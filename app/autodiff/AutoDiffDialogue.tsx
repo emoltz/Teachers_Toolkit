@@ -48,7 +48,7 @@ export default function AutoDiffDialogue({}: Props) {
                     <div className="grid w-full gap-2">
                         <Textarea
                             style={{height: '200px'}}
-                            placeholder="Type your message here."
+                            placeholder="Enter text to scaffold."
                             onChange={handleChange}
                         />
                     </div>
@@ -71,9 +71,19 @@ export default function AutoDiffDialogue({}: Props) {
                 <div>
                     <Spacer3/>
                     <Response responseText={response}
-                        handleToggle={setGenerated}
                     />
+                    <div className={"text-center items-center"}>
+
+                        <Button
+                            onClick={() => {
+                                setGenerated(false);
+                            }}
+                        >
+                            Generate Again
+                        </Button>
+                    </div>
                 </div>
+
             }
         </>
     )
@@ -96,19 +106,36 @@ interface ResponseText {
     responseText: string;
     gradeLevel?: string;
     language?: string;
-    handleToggle: (tog:boolean) => void;
+    title?: string;
 }
 
-const Response = ({responseText, gradeLevel, language, handleToggle}: ResponseText) => {
+const Response = ({responseText, gradeLevel, language, title}: ResponseText) => {
     if (!gradeLevel) {
         gradeLevel = "1st Grade";
     }
     if (!language) {
         language = "English";
     }
+    if (!title){
+        title="New Scaffold";
+    }
     return (
         <div className={"p-3"}>
-            <div >
+            <div className={"text-xl font-semibold"}>
+                {title}
+            </div>
+            <div className={"text-sm text-gray-700 italic"}>
+                <div>
+
+                    {gradeLevel}
+
+                </div>
+                <div>
+                    {language}
+                </div>
+            </div>
+            <div className={"p-1"}/>
+            <div>
                 {responseText}
 
             </div>
@@ -126,11 +153,7 @@ const Response = ({responseText, gradeLevel, language, handleToggle}: ResponseTe
             <div className={"p-5"}/>
             <div className={"text-center"}>
 
-            <Button
-                onClick={() => {handleToggle(false)}}
-            >
-                Generate Again
-            </Button>
+
             </div>
         </div>
     )
