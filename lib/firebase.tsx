@@ -1,7 +1,6 @@
 import {initializeApp} from "firebase/app";
 import {getAnalytics} from "firebase/analytics";
 import {Auth, getAuth, GoogleAuthProvider} from 'firebase/auth';
-import {doc, getFirestore, setDoc} from 'firebase/firestore';
 
 const firebaseConfig = {
     //load apiKey from .env file
@@ -29,14 +28,5 @@ if (typeof window !== 'undefined') {
 
 export {app, auth, analytics, provider};
 
-export async function saveUserToFirebase(user: any) {
-    const {uid, email, displayName, photoURL} = user;
-    const ref = doc(getFirestore(), 'users', uid);
-    const data = {
-        uid,
-        email,
-        displayName,
-        photoURL,
-    };
-    await setDoc(ref, data);
-}
+// TODO authentication
+// TODO save user to firestore
