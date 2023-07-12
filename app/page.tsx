@@ -1,23 +1,23 @@
 "use client";
-import ThreeColumn from "@/components/layouts/ThreeColumn";
+import AutoDiffDialogue from "@/app/autodiff/AutoDiffDialogue";
+import {useState} from "react";
 
 export default function Home() {
+    const [result, setResult] = useState("");
+
     return (
         <>
-            <ThreeColumn
-                firstNode={<SomeText/>}
-                secondNode={<SomeText/>}
-                thirdNode={<SomeText/>}
-            />
+            <AutoDiffDialogue/>
         </>
 
     )
 }
 
-function SomeText() {
-    return (
-        <>
-            Some text!
-        </>
-    )
+function Result(){
+        return (
+            <>
+                    Result
+
+            </>
+        )
 }
