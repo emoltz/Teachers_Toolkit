@@ -56,7 +56,7 @@ export function NavBar() {
                                 ) : (
                                     <UserCircle size={25}/>
                                 )}{" "}
-                        {user ? "Profile" : "Login"}
+                        {user ? "My Stuff" : "Login"}
 
                     </Button>
                 </Link>

@@ -7,20 +7,39 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Icons} from "@/components/ui/icons";
 import Image from "next/image";
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from "@firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    User,
+    UserCredential
+} from "@firebase/auth";
 import {auth} from "@/lib/firebase";
-import Link from "next/link";
+import {GoogleAuthProvider} from "firebase/auth";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 
 export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [regMode, setRegMode] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
+
+    // for google auth
+
+    async function signInWithGoogle() {
+        console.log("signing in with google")
+        if (typeof window !== 'undefined' && auth!) {
+            const provider: GoogleAuthProvider = new GoogleAuthProvider();
+            const result: UserCredential = await signInWithPopup(auth, provider);
+            const user: User = result.user;
+            // TODO save to database
+
+        }
+    }
+
 
     async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -31,13 +50,11 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
                     // go into sign up
                     await createUserWithEmailAndPassword(auth, email, password);
                     console.log("registered!");
-                    setLoggedIn(true)
 
 
                 } else {
                     await signInWithEmailAndPassword(auth, email, password);
                     console.log("signed in!");
-                    setLoggedIn(true)
                 }
             } catch (e) {
                 console.log("Error signing in: ", e);
@@ -142,11 +159,15 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
                                   </span>
                                 </div>
                             </div>
-                            <Button variant="outline" type="button" disabled={isLoading}>
+                            <Button variant="outline" type="button" disabled={isLoading}
+                             onClick={signInWithGoogle}>
                                 {isLoading ? (
                                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
                                 ) : (
-                                    <Icons.google className="mr-2 h-4 w-4"/>
+                                    <Icons.google className="mr-2 h-4 w-4"
+
+
+                                    />
                                 )}{" "}
                                 Google
                             </Button>
@@ -161,19 +182,4 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
 
     )
 
-}
-
-
-const LoggedIn = () => {
-    return (
-        <>
-        <div>
-            You're logged in!
-        </div>
-            <div>
-                <Button onClick={() => auth.signOut()}>Sign Out</Button>
-                <Link href={"/"}>Home</Link>
-            </div>
-        </>
-    )
 }

@@ -1,6 +1,5 @@
 "use client";
 import UserAuthForm from "@/components/auth/UserAuthForm";
-import {Metadata} from "next";
 import * as React from "react";
 import {useCurrentUser} from "@/lib/hooks";
 import {Button} from "@/components/ui/button";
@@ -8,10 +7,6 @@ import {signOut} from "@firebase/auth";
 import {auth} from "@/lib/firebase";
 import Loading from "@/components/ui/Loading";
 
-export const metadata: Metadata = {
-    title: "Authentication",
-    description: "Login to the app",
-}
 export default function page() {
     const {user, loading} = useCurrentUser();
     if (loading){
