@@ -13,8 +13,10 @@ export default function Home() {
 
     return (
         <>
-            {tools.map((tool) => (
-                <div>
+            {tools.map((tool, index) => (
+                <div
+                    key={index}
+                >
                     <Button className={"text-white"}>
                         <Link href={tool.path}>
                             {tool.name}
