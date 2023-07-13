@@ -10,7 +10,7 @@ export function NavBar() {
     ]
 
     return (
-        <nav className={"flex items-center flex-wrap bg-gray-900 p-6"}>
+        <nav className={"flex items-center flex-wrap bg-slate-950 p-6"}>
             <div className={"cursor-pointer flex items-center flex-shrink-0 text-white mr-6"}>
                 <span className={"font-display text-xl tracking-right"}>
                     <Link href={"/"}>
@@ -35,11 +35,16 @@ export function NavBar() {
             ))}
 
             <div className={""}>
-                <Button id={"menuButton"}
-                        variant={"outline"}
+                <Link
+                    href={"/login"}
                 >
-                    Log In
-                </Button>
+
+                    <Button id={"menuButton"}
+                            variant={"outline"}
+                    >
+                        Log In
+                    </Button>
+                </Link>
             </div>
 
 
