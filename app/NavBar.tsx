@@ -1,7 +1,13 @@
+"use client";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
+import {useCurrentUser} from "@/lib/hooks";
+import {Icons} from "@/components/ui/icons";
+import * as React from "react";
+import {IconUserCircle} from "@tabler/icons-react";
 
 export function NavBar() {
+    const {user, loading} = useCurrentUser();
     const routes = [
         {
             name: "About",
@@ -24,8 +30,10 @@ export function NavBar() {
                 </span>
             </div>
             <span className={"flex-grow"}/>
-            {routes.map((route) => (
-                <div>
+            {routes.map((route, index) => (
+                <div
+                    key={index}
+                >
                     <Button className={"text-white"}>
                         <Link href={route.path}>
                             {route.name}
@@ -41,8 +49,15 @@ export function NavBar() {
 
                     <Button id={"menuButton"}
                             variant={"outline"}
+                            disabled={loading}
                     >
-                        Log In
+                        {loading ? (
+                                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
+                                ) : (
+                                    <IconUserCircle/>
+                                )}{" "}
+                        {user ? "Profile" : "Login"}
+
                     </Button>
                 </Link>
             </div>
