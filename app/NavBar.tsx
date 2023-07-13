@@ -4,7 +4,7 @@ import Link from "next/link";
 import {useCurrentUser} from "@/lib/hooks";
 import {Icons} from "@/components/ui/icons";
 import * as React from "react";
-import {IconUserCircle} from "@tabler/icons-react";
+import {UserCircle} from "@phosphor-icons/react";
 
 export function NavBar() {
     const {user, loading} = useCurrentUser();
@@ -54,7 +54,7 @@ export function NavBar() {
                         {loading ? (
                                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
                                 ) : (
-                                    <IconUserCircle/>
+                                    <UserCircle size={25}/>
                                 )}{" "}
                         {user ? "Profile" : "Login"}
 
