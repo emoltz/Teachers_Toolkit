@@ -60,8 +60,6 @@ export function NavBar() {
                                     key={index}>
 
                                     <Link
-                                        onClick={close}
-
                                         href={route.path}>
                                         {route.name}
                                     </Link>
