@@ -4,7 +4,18 @@ import {Button} from "@/components/ui/button";
 import {ChangeEvent, useState} from "react";
 import Spacer3 from "@/components/layouts/Spacer3";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
+import {Icons} from '@/components/ui/icons';
 
+/*
+    TODO:
+    * The flow:
+        - user enters text (or uploads)
+        - the text disappears (goes into the AI)
+        - in the same text box, we start to see text being populated (streaming, but setting that up is a different task).
+        - The grade level, language, and generate buttons are disabled.
+        - After you generate something, I want it to appear in the right column as if from a polaroid.
+        - The generate button is no longer disabled.
+ */
 
 interface Props {
 
@@ -14,8 +25,10 @@ export default function AutoDiffDialogue({}: Props) {
     const [text, setText] = useState<string>('');
     const [response, setResponse] = useState<string>('');
     const [generated, setGenerated] = useState<boolean>(false);
+    const [generating, setGenerating] = useState<boolean>(false);
     const [gradeLevel, setGradeLevel] = useState<string>("");
     const [language, setLanguage] = useState<string>("");
+
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setText(e.target.value)
@@ -23,8 +36,7 @@ export default function AutoDiffDialogue({}: Props) {
     }
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-
-
+        setGenerating(true);
         const response = await fetch('/api/openai', {
             method: 'POST',
             headers: {
@@ -39,8 +51,8 @@ export default function AutoDiffDialogue({}: Props) {
         });
         const data = await response.json();
         setResponse(data.aiResponse);
+        setGenerating(false);
         setGenerated(true);
-
     }
 
     return (
@@ -61,7 +73,7 @@ export default function AutoDiffDialogue({}: Props) {
                             onValueChange={(value) => {
                                 setGradeLevel(value);
                             }}
-
+                            disabled={generating}
                         >
                             <SelectTrigger className={"w-[180px]"}>
                                 <SelectValue placeholder={"Grade Level"}/>
@@ -128,6 +140,7 @@ export default function AutoDiffDialogue({}: Props) {
                             </SelectContent>
                         </Select>
                         <Select
+                            disabled={generating}
                             onValueChange={(value) => {
                                 setLanguage(value);
 
@@ -155,11 +168,17 @@ export default function AutoDiffDialogue({}: Props) {
                     </div>
                     <Spacer3/>
                     <Button
+                        disabled={generating}
                         onClick={handleSubmit}
                     >
                         <div
-                            className={"font-sans"}
+                            className={"font-sans flex"}
+
                         >
+                            {
+                                generating &&
+                                <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
+                            }
                             Generate
                         </div>
                     </Button>
