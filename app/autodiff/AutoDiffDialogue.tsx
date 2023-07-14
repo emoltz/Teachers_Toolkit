@@ -192,13 +192,27 @@ export default function AutoDiffDialogue({}: Props) {
                 </Button>
                 :
                 // GENERATED
-                <Button
-                    onClick={() => {
-                        setGenerated(false)
-                    }}
-                >
-                    Generate Again
-                </Button>
+                <div className={"text-center items-center grid-cols-3"}>
+                    <Button
+                        variant={"ghost"}
+                    >
+                        Save
+                    </Button>
+                    <Button
+                        variant={"ghost"}
+
+                    >
+                        Download
+                    </Button>
+                    <Button
+
+                        onClick={() => {
+                            setGenerated(false)
+                        }}
+                    >
+                        Generate Again
+                    </Button>
+                </div>
             }
 
 
