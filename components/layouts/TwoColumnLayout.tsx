@@ -4,7 +4,7 @@ interface Props{
 }
 export default function TwoColumnLayout({column1, column2}: Props){
     return (
-        <div className="md:flex">
+        <div className="md:flex gap-10">
             <div className="md:w-1/2 p-4">
                 {column1}
             </div>
