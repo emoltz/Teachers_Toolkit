@@ -12,14 +12,13 @@ export async function POST(req: NextRequest) {
     const gradeLevel = body.gradeLevel;
     const language = body.language;
 
-    let prompt = "Rewrite the following at a " + gradeLevel + " reading level: " + 'in ' + language;
-    console.log(prompt)
+    let prompt = "Rewrite the following at a " + gradeLevel + " reading level: " + 'in ' + language + ': ';
     prompt += body.prompt;
     try {
 
         const aiResponse = await openai.createChatCompletion(
             {
-                model: "gpt-4",
+                model: "gpt-3.5-turbo",
                 messages: [
                     {
                         role: "user",
