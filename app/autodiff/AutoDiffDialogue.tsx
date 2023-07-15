@@ -70,7 +70,7 @@ export default function AutoDiffDialogue({}: Props) {
             </div>
             <Spacer3/>
 
-            <div className={"flex space-x-5"}>
+            <div className={"flex text-center items-center justify-center space-x-2"}>
                 <Select
                     onValueChange={(value) => {
                         setGradeLevel(value);
@@ -172,24 +172,26 @@ export default function AutoDiffDialogue({}: Props) {
 
             {!generated ?
                 // NOT GENERATED
+                <div className={"text-center items-center justify-center space-x-2"}>
 
-                <Button
-                    disabled={generating}
-                    onClick={handleSubmit}
-                >
-                    <div
-                        className={"font-sans flex"}
-
+                    <Button
+                        disabled={generating}
+                        onClick={handleSubmit}
                     >
+                        <div
+                            className={"font-sans flex"}
+
+                        >
 
 
-                        {
-                            generating &&
-                            <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
-                        }
-                        Generate
-                    </div>
-                </Button>
+                            {
+                                generating &&
+                                <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
+                            }
+                            Generate
+                        </div>
+                    </Button>
+                </div>
                 :
                 // GENERATED
                 <div className={"text-center items-center grid-cols-3"}>
