@@ -4,7 +4,9 @@ import {Button} from "@/components/ui/button";
 import {ChangeEvent, useState} from "react";
 import Spacer3 from "@/components/layouts/Spacer3";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
+import {ResponseText} from '@/lib/dataShape';
 import {Icons} from '@/components/ui/icons';
+import {Input} from "@/components/ui/input";
 
 /*
     TODO:
@@ -18,11 +20,13 @@ import {Icons} from '@/components/ui/icons';
  */
 
 interface Props {
+    onSaveResponse: (response: ResponseText) => void;
 
 }
 
-export default function AutoDiffDialogue({}: Props) {
+export default function AutoDiffDialogue({onSaveResponse}: Props) {
     const [text, setText] = useState<string>('');
+    const [title, setTitle] = useState<string>('');
     const [response, setResponse] = useState<string>('');
     const [generated, setGenerated] = useState<boolean>(false);
     const [generating, setGenerating] = useState<boolean>(false);
@@ -52,20 +56,32 @@ export default function AutoDiffDialogue({}: Props) {
         const data = await response.json();
         setResponse(data.aiResponse);
         setGenerating(false);
+        const newResponse: ResponseText = {
+            responseText: data.aiResponse,
+            gradeLevel: gradeLevel,
+            language: language,
+            title: title ? title : "Untitled",
+        };
+        onSaveResponse(newResponse);
         setGenerated(true);
     }
 
     return (
         <>
-
-
             <div className="grid w-full gap-2">
+                <Input
+                    placeholder={"Title"}
+                    disabled={generating || generated}
+                    onChange={(e) => {
+                        setTitle(e.target.value);
+                    }}
+                />
                 <Textarea
                     style={{height: '200px'}}
                     placeholder={generating ? "Generating..." : "Enter text to scaffold."}
                     onChange={handleChange}
                     value={generated ? response : text}
-                    disabled={generated}
+                    disabled={generated || generating}
                 />
             </div>
             <Spacer3/>
@@ -182,8 +198,6 @@ export default function AutoDiffDialogue({}: Props) {
                             className={"font-sans flex"}
 
                         >
-
-
                             {
                                 generating &&
                                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
@@ -194,82 +208,23 @@ export default function AutoDiffDialogue({}: Props) {
                 </div>
                 :
                 // GENERATED
-                <div className={"text-center items-center grid-cols-3"}>
-                    <Button
-                        variant={"ghost"}
-                    >
-                        Save
-                    </Button>
-                    <Button
-                        variant={"ghost"}
+                <>
+                    <div className={"text-center items-center grid-cols-3"}>
 
-                    >
-                        Download
-                    </Button>
-                    <Button
 
-                        onClick={() => {
-                            setGenerated(false)
-                        }}
-                    >
-                        Generate Again
-                    </Button>
-                </div>
+                        <Button
+
+                            onClick={() => {
+                                setGenerated(false)
+                            }}
+                        >
+                            Generate Again
+                        </Button>
+                    </div>
+                </>
             }
 
 
         </>
-    )
-}
-
-
-interface ResponseText {
-    responseText: string;
-    gradeLevel: string;
-    language: string;
-    title?: string;
-}
-
-const Response = ({responseText, gradeLevel, language, title}: ResponseText) => {
-    if (!title) {
-        title = "New Scaffold";
-    }
-    return (
-        <div className={"p-3"}>
-            <div className={"text-xl font-semibold"}>
-                {title}
-            </div>
-            <div className={"text-sm text-gray-700 italic"}>
-                <div>
-
-                    {gradeLevel}
-
-                </div>
-                <div>
-                    {language}
-                </div>
-            </div>
-            <div className={"p-1"}/>
-            <div>
-                {responseText}
-
-            </div>
-            <Button
-                variant={"secondary"}
-            >
-                Save
-            </Button>
-            <span className={"pr-3"}/>
-            <Button
-                variant={"ghost"}
-            >
-                Download
-            </Button>
-            <div className={"p-5"}/>
-            <div className={"text-center"}>
-
-
-            </div>
-        </div>
     )
 }

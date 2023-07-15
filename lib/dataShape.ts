@@ -1,4 +1,4 @@
-interface SavedText{
+export interface SavedText{
     id: number;
     uid: string;
     text: string;
@@ -13,4 +13,11 @@ interface SavedText{
     timesDownloaded: number;
     timesEdited: number;
     timesViewed: number;
+}
+
+export interface ResponseText {
+    responseText: string;
+    gradeLevel: string;
+    language?: string;
+    title?: string;
 }
