@@ -21,10 +21,11 @@ import {Input} from "@/components/ui/input";
 
 interface Props {
     onSaveResponse: (response: ResponseText) => void;
+    onGenerate: () => void;
 
 }
 
-export default function AutoDiffDialogue({onSaveResponse}: Props) {
+export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
     const [text, setText] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [response, setResponse] = useState<string>('');
@@ -64,6 +65,7 @@ export default function AutoDiffDialogue({onSaveResponse}: Props) {
         };
         onSaveResponse(newResponse);
         setGenerated(true);
+        onGenerate();
     }
 
     return (
