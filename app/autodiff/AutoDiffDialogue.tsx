@@ -8,23 +8,12 @@ import {ResponseText} from '@/lib/dataShape';
 import {Icons} from '@/components/ui/icons';
 import {Input} from "@/components/ui/input";
 
-/*
-    TODO:
-    * The flow:
-        - user enters text (or uploads)
-        - the text disappears (goes into the AI)
-        - in the same text box, we start to see text being populated (streaming, but setting that up is a different task).
-        - The grade level, language, and generate buttons are disabled.
-        - After you generate something, I want it to appear in the right column as if from a polaroid.
-        - The generate button is no longer disabled.
- */
-
 interface Props {
     onSaveResponse: (response: ResponseText) => void;
-
+    onGenerate: () => void;
 }
 
-export default function AutoDiffDialogue({onSaveResponse}: Props) {
+export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
     const [text, setText] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [response, setResponse] = useState<string>('');
@@ -32,7 +21,6 @@ export default function AutoDiffDialogue({onSaveResponse}: Props) {
     const [generating, setGenerating] = useState<boolean>(false);
     const [gradeLevel, setGradeLevel] = useState<string>("");
     const [language, setLanguage] = useState<string>("");
-
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setText(e.target.value)
@@ -64,6 +52,7 @@ export default function AutoDiffDialogue({onSaveResponse}: Props) {
         };
         onSaveResponse(newResponse);
         setGenerated(true);
+        onGenerate();
     }
 
     return (
@@ -189,14 +178,12 @@ export default function AutoDiffDialogue({onSaveResponse}: Props) {
             {!generated ?
                 // NOT GENERATED
                 <div className={"text-center items-center justify-center space-x-2"}>
-
                     <Button
                         disabled={generating}
                         onClick={handleSubmit}
                     >
                         <div
                             className={"font-sans flex"}
-
                         >
                             {
                                 generating &&
@@ -210,8 +197,6 @@ export default function AutoDiffDialogue({onSaveResponse}: Props) {
                 // GENERATED
                 <>
                     <div className={"text-center items-center grid-cols-3"}>
-
-
                         <Button
 
                             onClick={() => {
@@ -223,8 +208,6 @@ export default function AutoDiffDialogue({onSaveResponse}: Props) {
                     </div>
                 </>
             }
-
-
         </>
     )
 }

@@ -12,26 +12,31 @@ import {ResponseText} from "@/lib/dataShape";
 
 export default function page() {
     const [savedResponses, setSavedResponses] = useState<ResponseText[]>([]);
+    const [generated, setGenerated] = useState<boolean>(false);
 
     return (
         <>
-            <TwoColumnLayout column1={
-                <Column1
-                    onSaveResponse={(newResponse: ResponseText) => setSavedResponses(prevResponses => [...prevResponses, newResponse])}
-                />
-            } column2={<Column2
-                savedResponses={savedResponses}
-            />}/>
+            <TwoColumnLayout
+                column1={
+                    <Column1
+                        onSaveResponse={(newResponse: ResponseText) => setSavedResponses(prevResponses => [...prevResponses, newResponse])}
+                        onGenerate={(generated: boolean) => setGenerated(generated)}
+                    />
+                }
+                column2={<Column2
+                    savedResponses={savedResponses}
+                    generated={generated}
+                />}/>
         </>
     )
 }
 
 interface Column1Props {
     onSaveResponse: (response: ResponseText) => void;
+    onGenerate: (generated: boolean) => void;
 }
 
-const Column1 = ({onSaveResponse}: Column1Props) => {
-
+const Column1 = ({onSaveResponse, onGenerate}: Column1Props) => {
     return (
         <>
             <div className={"text-center"}>
@@ -51,6 +56,9 @@ const Column1 = ({onSaveResponse}: Column1Props) => {
             <Spacer3/>
             <AutoDiffDialogue
                 onSaveResponse={onSaveResponse}
+                onGenerate={() => {
+                    onGenerate(true);
+                }}
             />
 
         </>
@@ -59,9 +67,10 @@ const Column1 = ({onSaveResponse}: Column1Props) => {
 
 interface Column2Props {
     savedResponses: ResponseText[];
+    generated: boolean;
 }
 
-const Column2 = ({savedResponses}: Column2Props) => {
+const Column2 = ({savedResponses, generated}: Column2Props) => {
     return (
         <>
             <div className={"text-center"}>
@@ -85,7 +94,11 @@ const Column2 = ({savedResponses}: Column2Props) => {
             <Spacer3/>
             <div className={"text-center"}>
 
-                <Accordion type="single" collapsible className="w-full" defaultValue={"item-1"}
+                <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full"
+                    defaultValue={"item-1"}
                 >
                     {savedResponses.map((response: ResponseText, index: number) => (
                         <AccordionItem value={index.toString()}>
@@ -112,20 +125,30 @@ const Column2 = ({savedResponses}: Column2Props) => {
 
                     ))}
                 </Accordion>
-                <Spacer3/>
-                <div className={"flex text-center items-center justify-center space-x-2"}>
+                {/*<div className={"pb-2"}/>*/}
+                {generated ?
+                    <>
+                        <div className={"p-3 flex text-center items-center justify-center space-x-2"}>
 
-                    <Button
+                            <Button
 
-                    >
-                        Save All
-                    </Button>
-                    <Button
-                        variant={"outline"}
-                    >
-                        Download All
-                    </Button>
-                </div>
+                            >
+                                Save All
+                            </Button>
+                            <Button
+                                variant={"outline"}
+                            >
+                                Download All
+                            </Button>
+                        </div>
+                    </>
+                    :
+                    <div className={"text-gray-600 italic border"}>
+                        Start generating to see your recent generations here.
+
+                    </div>
+                }
+
             </div>
         </>
     )
