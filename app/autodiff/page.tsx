@@ -16,15 +16,17 @@ export default function page() {
 
     return (
         <>
-            <TwoColumnLayout column1={
-                <Column1
-                    onSaveResponse={(newResponse: ResponseText) => setSavedResponses(prevResponses => [...prevResponses, newResponse])}
-                    onGenerate={(generated: boolean) => setGenerated(generated)}
-                />
-            } column2={<Column2
-                savedResponses={savedResponses}
-                generated={generated}
-            />}/>
+            <TwoColumnLayout
+                column1={
+                    <Column1
+                        onSaveResponse={(newResponse: ResponseText) => setSavedResponses(prevResponses => [...prevResponses, newResponse])}
+                        onGenerate={(generated: boolean) => setGenerated(generated)}
+                    />
+                }
+                column2={<Column2
+                    savedResponses={savedResponses}
+                    generated={generated}
+                />}/>
         </>
     )
 }
