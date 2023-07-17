@@ -7,13 +7,14 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+
+function createPrompt(gradeLevel: string, language: string, text: string) {
+    return `Can you help me rewrite the following text? It should be suitable for a ${gradeLevel} grade level reader and in ${language}: ${text}`;
+}
+
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const gradeLevel = body.gradeLevel;
-    const language = body.language;
-
-    let prompt = "Rewrite the following at a " + gradeLevel + " reading level: " + 'in ' + language + ': ';
-    prompt += body.prompt;
+    const prompt = createPrompt(body.gradeLevel, body.language, body.prompt);
     try {
 
         const aiResponse = await openai.createChatCompletion(
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({aiResponse: text}); // What do I put inside the parentheses?
     } catch (error) {
         console.log(error);
-        return NextResponse.json({message: "catch block", error: error, prompt: prompt})
+        return NextResponse.json({message: "An error occured", error: error, prompt: prompt})
     }
 
 }
