@@ -1,5 +1,5 @@
 import {initializeApp} from "firebase/app";
-import {getAnalytics} from "firebase/analytics";
+import {Analytics, getAnalytics} from "firebase/analytics";
 import {Auth, getAuth, GoogleAuthProvider} from 'firebase/auth';
 import {User} from "@firebase/auth";
 import {doc, Firestore, getDoc, getFirestore, setDoc} from "@firebase/firestore";
@@ -19,7 +19,7 @@ const firebaseConfig = {
 
 let app;
 let auth: Auth;
-let analytics;
+let analytics: Analytics;
 let provider: GoogleAuthProvider;
 
 if (typeof window !== 'undefined') {
@@ -39,12 +39,33 @@ export async function saveUserToFirestore(user: User) {
     await setDoc(ref, userObject);
 }
 
-export async function checkIfUserInDatabase(user: User){
+export async function checkIfUserInDatabase(user: User) {
     const db = getFirestore();
     const userRef = doc(db, 'Users', user.uid);
     const docSnap = await getDoc(userRef);
 
     return !docSnap.exists();
+}
 
+export async function saveGeneratedText(user: User, title: string, generatedText: string, originalText: string, gradeLevel: string, language: string, notes: string = "") {
+    // this is for when the user generates text, NOT when they choose to save it.
+    const db: Firestore = getFirestore();
+    if (language == "") {
+        language = "English";
+    }
+    if (gradeLevel == ""){
+        gradeLevel = "1st Grade";
+    }
+    const {uid, email, displayName, photoURL} = user;
+    const savedTextObject: Models.SavedTextClass = new Models.SavedTextClass(uid, gradeLevel, language, generatedText, originalText, title, notes);
+    const ref = doc(db, 'Users', uid, 'SavedText', savedTextObject.id);
+    await setDoc(ref, savedTextObject.toObject()).then(() => {
+        console.log(savedTextObject)
+    });
+
+}
+
+export async function setGeneratedTextToSaved(user: User, savedText: Models.SavedText) {
+    // this is when they push the save button and the `saved` attribute becomes true
 
 }

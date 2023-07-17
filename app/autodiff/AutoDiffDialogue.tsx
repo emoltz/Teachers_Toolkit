@@ -7,6 +7,8 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/
 import {ResponseText} from '@/lib/dataShape';
 import {Icons} from '@/components/ui/icons';
 import {Input} from "@/components/ui/input";
+import {auth, saveGeneratedText} from "@/lib/firebase";
+import {User} from "@firebase/auth";
 
 interface Props {
     onSaveResponse: (response: ResponseText) => void;
@@ -19,7 +21,6 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
     const [response, setResponse] = useState<string>('');
     const [generated, setGenerated] = useState<boolean>(false);
     const [generating, setGenerating] = useState<boolean>(false);
-    const [readyToGen, setReadyToGen] = useState<boolean>(false);
     const [gradeLevel, setGradeLevel] = useState<string>("");
     const [language, setLanguage] = useState<string>("");
 
@@ -52,6 +53,10 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
             title: title ? title : "Untitled",
         };
         onSaveResponse(newResponse);
+        // save to database
+        const user:User | null = await auth.currentUser;
+        await saveGeneratedText(user!, title, data.aiResponse, text, gradeLevel, language);
+
         setGenerated(true);
         onGenerate();
     }

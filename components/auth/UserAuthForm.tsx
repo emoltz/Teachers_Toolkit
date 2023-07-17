@@ -27,8 +27,6 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
     const [password, setPassword] = useState('');
     const [regMode, setRegMode] = useState(false);
 
-    // for google auth
-
     async function signInWithGoogle() {
         console.log("signing in with google")
         if (typeof window !== 'undefined' && auth!) {
