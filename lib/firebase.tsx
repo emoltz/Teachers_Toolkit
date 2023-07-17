@@ -1,6 +1,9 @@
 import {initializeApp} from "firebase/app";
 import {getAnalytics} from "firebase/analytics";
 import {Auth, getAuth, GoogleAuthProvider} from 'firebase/auth';
+import {User} from "@firebase/auth";
+import {doc, Firestore, getDoc, getFirestore, setDoc} from "@firebase/firestore";
+import * as Models from "./dataShape";
 
 const firebaseConfig = {
     //load apiKey from .env file
@@ -28,5 +31,20 @@ if (typeof window !== 'undefined') {
 
 export {app, auth, analytics, provider};
 
-// TODO authentication
-// TODO save user to firestore
+export async function saveUserToFirestore(user: User) {
+    const db: Firestore = getFirestore();
+    const {uid, email, displayName, photoURL} = user;
+    const ref = doc(db, 'Users', uid)
+    const userObject = new Models.User(uid, email, displayName, photoURL).toObject();
+    await setDoc(ref, userObject);
+}
+
+export async function checkIfUserInDatabase(user: User){
+    const db = getFirestore();
+    const userRef = doc(db, 'Users', user.uid);
+    const docSnap = await getDoc(userRef);
+
+    return !docSnap.exists();
+
+
+}

@@ -1,8 +1,10 @@
+import {FieldValue, serverTimestamp} from "@firebase/firestore";
+
 export interface SavedText {
     id: number;
     uid: string;
     text: string;
-    date: Date;
+    date: FieldValue;
     title: string;
     gradeLevel: string; // TODO multiple at a time?
     language: string; // TODO multiple?
@@ -24,7 +26,7 @@ export interface ResponseText {
 
 export class SavedTextClass implements SavedText {
     archived: boolean;
-    date: Date;
+    date: FieldValue;
     gradeLevel: string;
     id: number;
     language: string;
@@ -49,7 +51,7 @@ export class SavedTextClass implements SavedText {
         this.id = Date.now();
         this.uid = uid;
         this.archived = false;
-        this.date = new Date();
+        this.date = serverTimestamp();
         this.gradeLevel = gradeLevel;
         this.language = language;
         this.saved = false;
@@ -73,5 +75,36 @@ export class SavedTextClass implements SavedText {
         this.archived = true;
     }
 
+    toObject() {
+        return {
+            // TODO
+        }
+    }
+}
+
+export class User {
+    uid: string;
+    email: string;
+    displayName: string;
+    photoURL: string;
+
+    // @ts-ignore
+    constructor(uid, email, displayName, photoURL) {
+        this.uid = uid;
+        this.email = email;
+        this.displayName = displayName;
+        this.photoURL = photoURL;
+    }
+
+    toObject() {
+        return {
+            uid: this.uid,
+            email: this.email,
+            displayName: this.displayName,
+            photoURL: this.photoURL,
+        }
+
+
+    }
 
 }
