@@ -21,14 +21,15 @@ export default function page() {
         }
     }, [user])
 
-    if (!user) {
-        return (
-            <UserAuthForm/>
-        )
-    }
+
     if (loading || !myGenerations) {
         return (
             <Loading/>
+        )
+    }
+    if (!user) {
+        return (
+            <UserAuthForm/>
         )
     }
     return (
