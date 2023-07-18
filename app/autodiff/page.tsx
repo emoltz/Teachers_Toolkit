@@ -8,10 +8,12 @@ import Spacer3 from "@/components/layouts/Spacer3";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
-import {ResponseText} from "@/lib/dataShape";
+import {SavedText} from "@/lib/dataShape";
+import {useCurrentUser} from "@/lib/hooks";
 
 export default function page() {
-    const [savedResponses, setSavedResponses] = useState<ResponseText[]>([]);
+    const {user, loading} = useCurrentUser();
+    const [savedResponses, setSavedResponses] = useState<SavedText[]>([]);
     const [generated, setGenerated] = useState<boolean>(false);
 
     return (
@@ -19,24 +21,27 @@ export default function page() {
             <TwoColumnLayout
                 column1={
                     <Column1
-                        onSaveResponse={(newResponse: ResponseText) => setSavedResponses(prevResponses => [...prevResponses, newResponse])}
+                        onSaveResponse={(newResponse: SavedText) => setSavedResponses(prevResponses => [...prevResponses, newResponse])}
                         onGenerate={(generated: boolean) => setGenerated(generated)}
+                        loading={loading}
                     />
                 }
                 column2={<Column2
                     savedResponses={savedResponses}
                     generated={generated}
+                    loading={loading}
                 />}/>
         </>
     )
 }
 
 interface Column1Props {
-    onSaveResponse: (response: ResponseText) => void;
+    onSaveResponse: (response: SavedText) => void;
     onGenerate: (generated: boolean) => void;
+    loading: boolean;
 }
 
-const Column1 = ({onSaveResponse, onGenerate}: Column1Props) => {
+const Column1 = ({onSaveResponse, onGenerate, loading}: Column1Props) => {
     return (
         <>
             <div className={"text-center"}>
@@ -66,11 +71,17 @@ const Column1 = ({onSaveResponse, onGenerate}: Column1Props) => {
 }
 
 interface Column2Props {
-    savedResponses: ResponseText[];
+    savedResponses: SavedText[];
     generated: boolean;
+    loading: boolean;
 }
 
-const Column2 = ({savedResponses, generated}: Column2Props) => {
+const Column2 = ({savedResponses, generated, loading}: Column2Props) => {
+    // const saveSingleResponseHandler = async (user: User, savedText) => {
+    //     // TODO how do I get that `savedResponses` item's id from firestore?
+    //     setGeneratedTextToSaved()
+    // }
+
     return (
         <>
             <div className={"text-center"}>
@@ -100,16 +111,20 @@ const Column2 = ({savedResponses, generated}: Column2Props) => {
                     className="w-full"
                     defaultValue={"item-1"}
                 >
-                    {savedResponses.map((response: ResponseText, index: number) => (
-                        <AccordionItem value={index.toString()}>
+                    {savedResponses.map((response: SavedText, index: number) => (
+                        <AccordionItem value={index.toString()}
+                                       key={index}
+                        >
                             <AccordionTrigger>
                                 {response.title} | {response.gradeLevel}
                             </AccordionTrigger>
                             <AccordionContent>
-                                {response.responseText}
+                                {response.generatedText}
                                 <Spacer3/>
                                 <div className={"text-center"}>
                                     <Button
+                                        disabled={loading}
+                                        // onClick={saveSingleResponseHandler}
                                     >
                                         Save
                                     </Button>

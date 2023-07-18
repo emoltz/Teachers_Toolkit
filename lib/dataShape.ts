@@ -7,8 +7,8 @@ export interface SavedText {
     originalText: string;
     date: FieldValue;
     title: string;
-    gradeLevel: string; // TODO multiple at a time?
-    language: string; // TODO multiple?
+    gradeLevel: string;
+    language: string;
     notes: string;
     saved: boolean; // I can save everything automatically, but save it to their account if they choose
     archived: boolean; // soft deletion (so they can undo)
@@ -16,13 +16,6 @@ export interface SavedText {
     timesDownloaded: number;
     timesEdited: number;
     timesViewed: number;
-}
-
-export interface ResponseText {
-    responseText: string;
-    gradeLevel: string;
-    language?: string;
-    title?: string;
 }
 
 export class SavedTextClass implements SavedText {
@@ -51,7 +44,7 @@ export class SavedTextClass implements SavedText {
         notes: string = "",
     ) {
         // random number for id
-        this.id = (Date.now() * Math.random()* 10000).toString();
+        this.id = (Date.now() * Math.random() * 10000).toString();
         this.uid = uid;
         this.archived = false;
         this.date = serverTimestamp();
@@ -75,15 +68,15 @@ export class SavedTextClass implements SavedText {
         this.saved = !this.saved;
     }
 
-    toggleArchive(){
+    toggleArchive() {
         this.archived = !this.archived;
     }
 
-    setNotes(newNote:string){
+    setNotes(newNote: string) {
         this.notes = newNote;
     }
 
-    addToNotes(note:string){
+    addToNotes(note: string) {
         this.notes += note;
     }
 
@@ -98,7 +91,7 @@ export class SavedTextClass implements SavedText {
             saved: this.saved,
             generatedText: this.generatedText,
             originalText: this.originalText,
-            title:this.title,
+            title: this.title,
             notes: this.notes,
             timesDownloaded: this.timesDownloaded,
             timesEdited: this.timesEdited,

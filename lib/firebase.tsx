@@ -60,7 +60,7 @@ export async function saveGeneratedText(user: User, title: string, generatedText
     const savedTextObject: Models.SavedTextClass = new Models.SavedTextClass(uid, gradeLevel, language, generatedText, originalText, title, notes);
     const ref = doc(db, 'Users', uid, 'SavedText', savedTextObject.id);
     await setDoc(ref, savedTextObject.toObject()).then(() => {
-        console.log(savedTextObject)
+        // console.log(savedTextObject);
     });
 
 }
