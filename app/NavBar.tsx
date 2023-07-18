@@ -7,19 +7,24 @@ import * as React from "react";
 import {useState} from "react";
 import {List, UserCircle} from "@phosphor-icons/react";
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTrigger,} from "@/components/ui/sheet";
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
+import {Tool} from "@/lib/dataShape"
+import {tools} from "@/lib/tools"
+import {cn} from "@/lib/utils";
+import {tailwindStyles} from "@/lib/styles";
+import {Separator} from "@/components/ui/separator"
 
 
 export function NavBar() {
     const {user, loading} = useCurrentUser();
     const [isOpen, setIsOpen] = useState(false);
 
-    const routes = [
-        {
-            name: "About",
-            path: "/about"
-        },
-
-    ]
 
     return (
         <nav className={"flex items-center flex-wrap bg-slate-950 p-6"}>
@@ -50,28 +55,34 @@ export function NavBar() {
                         </SheetTrigger>
                         <SheetContent>
                             <SheetHeader>
-                                Links
+                                <div className={tailwindStyles.heading1}>
+
+                                    Site Map
+                                </div>
                             </SheetHeader>
                             <SheetDescription>
 
                             </SheetDescription>
-                            {routes.map((route, index) => (
-                                <div
-                                    key={index}>
-
-                                    <Link
-                                        href={route.path}>
-                                        {route.name}
-                                    </Link>
-                                </div>
+                            {tools.map((tool: Tool, index) => (
+                                <>
+                                    {!tool.disabled &&
+                                        <div
+                                            key={index}>
+                                            <Link
+                                                href={tool.path}>
+                                                {tool.name}
+                                            </Link>
+                                        </div>
+                                    }
+                                </>
                             ))}
+                            <Separator/>
                             <div className="">
                                 <Link href={"mystuff"}>
                                     My Stuff
                                 </Link>
                             </div>
                             <div>
-
 
                                 <Link
                                     href={"/login"}
@@ -84,26 +95,42 @@ export function NavBar() {
                         </SheetContent>
                     </Sheet>
                 </div>
-                <div className={"sm:block hidden"}>
+                <div className="pr-3 sm:block hidden">
 
-                    {routes.map((route, index) => (
-                        <div
-                            key={index}
-                        >
-                            <Button className={"text-white"}>
-                                <Link href={route.path}>
-                                    {route.name}
-                                </Link>
-                            </Button>
-                        </div>
-                    ))}
+                    <NavigationMenu>
+                        <NavigationMenuItem>
+                            <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
+                            <NavigationMenuContent
+                                // className={"origin-top-right right-0"}
+                            >
+                                <ul className={"flex-auto w-[200px] "}>
+                                    {tools.map((tool: Tool) => {
+                                        return (
+                                            <>
+                                                {!tool.disabled &&
+
+                                                    <ListItem
+                                                        key={tool.name}
+                                                        title={tool.name}
+                                                        href={tool.path}
+                                                    >
+                                                        {tool.description}
+
+                                                    </ListItem>
+                                                }
+                                            </>
+                                        )
+                                    })}
+                                </ul>
+                            </NavigationMenuContent>
+                        </NavigationMenuItem>
+                    </NavigationMenu>
                 </div>
 
                 <div className={"sm:block hidden"}>
                     <Link
                         href={"/login"}
                     >
-
                         <Button id={"menuButton"}
                                 variant={"outline"}
                                 disabled={loading}
@@ -113,7 +140,7 @@ export function NavBar() {
                             ) : (
                                 <UserCircle size={25}/>
                             )}
-                            {user ? "My Stuff" : "Login"}
+                            {user ? "Profile" : "Login"}
 
                         </Button>
                     </Link>
@@ -124,3 +151,29 @@ export function NavBar() {
         </nav>
     )
 }
+
+const ListItem = React.forwardRef<
+    React.ElementRef<"a">,
+    React.ComponentPropsWithoutRef<"a">
+>(({className, title, children, ...props}, ref) => {
+    return (
+        <li>
+            <NavigationMenuLink asChild>
+                <a
+                    ref={ref}
+                    className={cn(
+                        "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                        className
+                    )}
+                    {...props}
+                >
+                    <div className="text-sm font-medium leading-none">{title}</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        {children}
+                    </p>
+                </a>
+            </NavigationMenuLink>
+        </li>
+    )
+})
+ListItem.displayName = "ListItem"

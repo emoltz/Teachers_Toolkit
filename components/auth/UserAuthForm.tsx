@@ -88,9 +88,9 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
                         <h1 className="text-2xl font-semibold tracking-tight">
                             Create an account
                         </h1>
-                        <p className="text-sm text-muted-foreground">
+                        <div className="text-sm text-muted-foreground">
                             Enter your email below to create your account
-                        </p>
+                        </div>
 
                     </div>
                     {/* This `div` wraps the sign in form and applies a grid layout with a gap between grid items (using the `grid gap-6` classes). */}
