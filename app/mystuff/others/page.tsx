@@ -9,6 +9,7 @@ import {tailwindStyles} from "@/lib/styles";
 import {Button} from "@/components/ui/button";
 import {ArrowArcLeft} from "@phosphor-icons/react";
 import Link from "next/link";
+import UserAuthForm from "@/components/auth/UserAuthForm";
 
 export default function page() {
 
@@ -20,6 +21,11 @@ export default function page() {
         }
     }, [user])
 
+    if (!user) {
+        return (
+            <UserAuthForm/>
+        )
+    }
     if (loading || !myGenerations) {
         return (
             <Loading/>

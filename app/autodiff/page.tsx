@@ -128,7 +128,7 @@ const Column2 = ({savedResponses, generated}: Column2Props) => {
                                     <Button
                                         disabled={loading}
                                         onClick={() => {
-                                            saveSingleResponseHandler(response).then( () => {
+                                            saveSingleResponseHandler(response).then(() => {
 
                                             })
                                         }}
