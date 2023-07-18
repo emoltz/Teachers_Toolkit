@@ -65,7 +65,13 @@ export function NavBar() {
                                     </Link>
                                 </div>
                             ))}
+                            <div className="">
+                                <Link href={"mystuff"}>
+                                    My Stuff
+                                </Link>
+                            </div>
                             <div>
+
 
                                 <Link
                                     href={"/login"}
