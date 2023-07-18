@@ -2,9 +2,21 @@ import {initializeApp} from "firebase/app";
 import {Analytics, getAnalytics} from "firebase/analytics";
 import {Auth, getAuth, GoogleAuthProvider} from 'firebase/auth';
 import {User} from "@firebase/auth";
-import {doc, Firestore, getDoc, getFirestore, setDoc, updateDoc} from "@firebase/firestore";
+import {
+    collection,
+    doc,
+    Firestore,
+    getDoc,
+    getDocs,
+    getFirestore,
+    query,
+    setDoc,
+    updateDoc,
+    where
+} from "@firebase/firestore";
 import * as Models from "./dataShape";
 import {SavedText} from "./dataShape";
+
 
 const firebaseConfig = {
     //load apiKey from .env file
@@ -32,6 +44,10 @@ if (typeof window !== 'undefined') {
 
 export {app, auth, analytics, provider};
 
+function firebaseNoUserWarning(): void {
+    console.warn("No user. Source: ", "/lib/firebase.tsx")
+}
+
 export async function saveUserToFirestore(user: User) {
     const db: Firestore = getFirestore();
     const {uid, email, displayName, photoURL} = user;
@@ -54,7 +70,7 @@ export async function saveGeneratedText(user: User, savedTextClass: Models.Saved
     if (savedTextClass.language == "") {
         savedTextClass.language = "English";
     }
-    if (savedTextClass.gradeLevel == ""){
+    if (savedTextClass.gradeLevel == "") {
         savedTextClass.gradeLevel = "1st Grade";
     }
     const {uid, email, displayName, photoURL} = user;
@@ -68,8 +84,8 @@ export async function saveGeneratedText(user: User, savedTextClass: Models.Saved
 }
 
 export async function setGeneratedTextToSaved(user: User, savedText: SavedText) {
-    if (!user){
-        console.warn("No user. Source: ", "/lib/firebase.tsx")
+    if (!user) {
+        firebaseNoUserWarning();
         return;
     }
     const db = getFirestore();
@@ -77,4 +93,41 @@ export async function setGeneratedTextToSaved(user: User, savedText: SavedText) 
     return updateDoc(docRef, {
         saved: true
     });
+}
+
+export async function getAllGenerations(user: User | null):Promise<SavedText[]>{
+    if (!user){
+        firebaseNoUserWarning();
+        return [];
+    }
+
+    const savedTexts: SavedText[] = [];
+    const db = getFirestore();
+    const q = query(collection(doc(collection(db, 'Users'), user.uid), 'SavedText'));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach( (doc) => {
+        const data: SavedText = doc.data() as SavedText;
+        data.id = doc.id;
+        savedTexts.push(data);
+    });
+    return savedTexts;
+}
+
+
+export async function getSavedGenerations(user: User | null):Promise<SavedText[]> {
+    if (!user) {
+        firebaseNoUserWarning();
+        return [];
+    }
+    const savedTexts: SavedText[] = [];
+    const db = getFirestore();
+    const q = query(collection(doc(collection(db, 'Users'), user.uid), 'SavedText'), where('saved', '==', true));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        const data = doc.data() as SavedText;
+        data.id = doc.id;
+        savedTexts.push(data);
+    });
+    return savedTexts;
 }

@@ -128,9 +128,12 @@ const Column2 = ({savedResponses, generated}: Column2Props) => {
                                     <Button
                                         disabled={loading}
                                         onClick={() => {
-                                            saveSingleResponseHandler(response)
+                                            saveSingleResponseHandler(response).then( () => {
+
+                                            })
                                         }}
                                     >
+                                        {/*TODO add unsave button option*/}
                                         Save
                                     </Button>
                                     <Button
@@ -146,23 +149,23 @@ const Column2 = ({savedResponses, generated}: Column2Props) => {
                     ))}
                 </Accordion>
                 {/*<div className={"pb-2"}/>*/}
-                {generated ?
-                    <>
-                        <div className={"p-3 flex text-center items-center justify-center space-x-2"}>
-
-                            <Button
-
-                            >
-                                Save All
-                            </Button>
-                            <Button
-                                variant={"outline"}
-                            >
-                                Download All
-                            </Button>
-                        </div>
-                    </>
-                    :
+                {!generated &&
+                    // <>
+                    //     <div className={"p-3 flex text-center items-center justify-center space-x-2"}>
+                    //
+                    //         <Button
+                    //
+                    //         >
+                    //             Save All
+                    //         </Button>
+                    //         <Button
+                    //             variant={"outline"}
+                    //         >
+                    //             Download All
+                    //         </Button>
+                    //     </div>
+                    // </>
+                    // :
                     <div className={"text-gray-600 italic border"}>
                         Start generating to see your recent generations here.
 
