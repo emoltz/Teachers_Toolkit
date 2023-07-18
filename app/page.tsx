@@ -3,6 +3,7 @@ import Link from "next/link";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card"
 import {Separator} from "@/components/ui/separator";
 import Image from "next/image";
+import {tools} from "@/lib/tools"
 
 interface Tool {
     name: string;
@@ -13,29 +14,7 @@ interface Tool {
 }
 
 export default function Home() {
-    const tools: Tool[] = [
-        {
-            name: "Auto Differentiator",
-            path: "/autodiff",
-            description: "Automatically scaffold text to a lower grade level.",
-            disabled: false,
-            image: "/robots/auto-diff.svg"
-        },
-        {
-            name: "Data Analysis Dashboard",
-            path: "/data-analysis",
-            description: "Analyze data with a variety of tools.",
-            disabled: true,
-            image: "/robots/3.svg"
-        },
-        {
-            name: "Classroom Generator",
-            path: "/classroom-generator",
-            description: "Generate quizzes, reading materials, worksheets, and more.",
-            disabled: true,
-            image: "/robots/2.svg"
-        }
-    ]
+
     return (
         <>
 
@@ -45,9 +24,9 @@ export default function Home() {
                 <h1 className={"text-3xl font-sans text-gray-800"}>
                     Welcome to Teacher's Toolkit
                 </h1>
-                <p className={"text-gray-600 "}>
+                <div className={"text-gray-600 "}>
                     A collection of AI tools to help teachers.
-                </p>
+                </div>
             </div>
             <Separator/>
 
@@ -56,8 +35,10 @@ export default function Home() {
             >
                 {tools.map((tool, index) => (
 
-                    <div className={tool.disabled ? "cursor-not-allowed pointer-events-none" : ""}>
-                        <Link href={tool.path} key={index}>
+                    <div className={tool.disabled ? "cursor-not-allowed pointer-events-none" : ""}
+                         key={index}
+                    >
+                        <Link href={tool.path}>
                             <Card>
                                 <CardHeader>
                                     <CardTitle>
@@ -68,9 +49,9 @@ export default function Home() {
                                     <CardDescription>{tool.description}
                                         {tool.disabled &&
 
-                                            <div className="pt-1 text-red-400 font-semibold">
+                                            <span className="pt-1 pl-3 text-red-400 font-semibold">
                                                 Coming Soon
-                                            </div>
+                                            </span>
                                         }
                                     </CardDescription>
                                 </CardHeader>
@@ -83,15 +64,6 @@ export default function Home() {
                                     />
 
                                 </CardContent>
-                                {/*{tool.disabled &&*/}
-
-
-                                {/*    <CardFooter>*/}
-                                {/*        <div className={"text-gray-600"}>*/}
-                                {/*            Coming soon!*/}
-                                {/*        </div>*/}
-                                {/*    </CardFooter>*/}
-                                {/*}*/}
                             </Card>
 
                         </Link>

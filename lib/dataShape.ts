@@ -1,5 +1,13 @@
 import {FieldValue, serverTimestamp} from "@firebase/firestore";
 
+export interface Tool {
+    name: string;
+    path: string;
+    description: string;
+    disabled: boolean;
+    image: string;
+}
+
 export interface SavedText {
     id: string;
     uid: string;
