@@ -4,7 +4,7 @@ export const tools: Tool[] = [
         {
             name: "Auto Differentiator",
             path: "/autodiff",
-            description: "Automatically scaffold text to a lower grade level.",
+            description: "Automatically scaffold text to a lower or higher grade level.",
             disabled: false,
             image: "/robots/auto-diff.svg"
         },
