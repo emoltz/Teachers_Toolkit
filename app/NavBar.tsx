@@ -64,17 +64,18 @@ export function NavBar() {
 
                             </SheetDescription>
                             {tools.map((tool: Tool, index) => (
-                                <>
+                                <div key={index}>
                                     {!tool.disabled &&
                                         <div
-                                            key={index}>
+
+                                        >
                                             <Link
                                                 href={tool.path}>
                                                 {tool.name}
                                             </Link>
                                         </div>
                                     }
-                                </>
+                                </div>
                             ))}
                             <Separator/>
                             <div className="">
@@ -106,11 +107,11 @@ export function NavBar() {
                                 <ul className={"flex-auto w-[200px] "}>
                                     {tools.map((tool: Tool) => {
                                         return (
-                                            <>
+                                            <div key={tool.name}>
                                                 {!tool.disabled &&
 
                                                     <ListItem
-                                                        key={tool.name}
+
                                                         title={tool.name}
                                                         href={tool.path}
                                                     >
@@ -118,7 +119,7 @@ export function NavBar() {
 
                                                     </ListItem>
                                                 }
-                                            </>
+                                            </div>
                                         )
                                     })}
                                 </ul>
@@ -129,7 +130,7 @@ export function NavBar() {
 
                 <div className={"sm:block hidden"}>
                     <Link
-                        href={"/login"}
+                        href={user ? "/profile" : "/login"}
                     >
                         <Button id={"menuButton"}
                                 variant={"outline"}

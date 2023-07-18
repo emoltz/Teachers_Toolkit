@@ -1,9 +1,15 @@
+import LogOut from "@/app/profile/LogOut";
+import {tailwindStyles} from "@/lib/styles";
+
 export default function page() {
     return (
 
-        <>
-            Profile Page
+        <div>
+            <div className={tailwindStyles.heading1}>
+                Profile Page
+            </div>
+            <LogOut/>
 
-        </>
+        </div>
     )
 }
