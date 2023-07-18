@@ -10,6 +10,7 @@ import {Button} from "@/components/ui/button";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
 import {SavedText} from "@/lib/dataShape";
 import {useCurrentUser} from "@/lib/hooks";
+import {setGeneratedTextToSaved} from "@/lib/firebase";
 
 export default function page() {
     const {user, loading} = useCurrentUser();
@@ -29,7 +30,6 @@ export default function page() {
                 column2={<Column2
                     savedResponses={savedResponses}
                     generated={generated}
-                    loading={loading}
                 />}/>
         </>
     )
@@ -73,14 +73,17 @@ const Column1 = ({onSaveResponse, onGenerate, loading}: Column1Props) => {
 interface Column2Props {
     savedResponses: SavedText[];
     generated: boolean;
-    loading: boolean;
 }
 
-const Column2 = ({savedResponses, generated, loading}: Column2Props) => {
-    // const saveSingleResponseHandler = async (user: User, savedText) => {
-    //     // TODO how do I get that `savedResponses` item's id from firestore?
-    //     setGeneratedTextToSaved()
-    // }
+const Column2 = ({savedResponses, generated}: Column2Props) => {
+    const {user, loading} = useCurrentUser();
+    const saveSingleResponseHandler = async (savedText: SavedText) => {
+        if (!user) {
+            console.warn("No user. Source: ", "/auto-diff/page.tsx")
+            return;
+        }
+        await setGeneratedTextToSaved(user, savedText);
+    }
 
     return (
         <>
@@ -116,7 +119,7 @@ const Column2 = ({savedResponses, generated, loading}: Column2Props) => {
                                        key={index}
                         >
                             <AccordionTrigger>
-                                {response.title} | {response.gradeLevel}
+                                {response.title} | {response.gradeLevel} | {response.id}
                             </AccordionTrigger>
                             <AccordionContent>
                                 {response.generatedText}
@@ -124,7 +127,9 @@ const Column2 = ({savedResponses, generated, loading}: Column2Props) => {
                                 <div className={"text-center"}>
                                     <Button
                                         disabled={loading}
-                                        // onClick={saveSingleResponseHandler}
+                                        onClick={() => {
+                                            saveSingleResponseHandler(response)
+                                        }}
                                     >
                                         Save
                                     </Button>

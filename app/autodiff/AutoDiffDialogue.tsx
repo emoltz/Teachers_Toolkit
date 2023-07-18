@@ -49,17 +49,19 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
         const data = await response.json();
         setResponse(data.aiResponse);
         setGenerating(false);
-        const newResponse: SavedText = new SavedTextClass(
+        const savedTextClass: SavedTextClass = new SavedTextClass(
             user!.uid,
             gradeLevel,
             language,
             data.aiResponse,
             text,
             title
-        ).toObject();
-        onSaveResponse(newResponse);
+        );
 
-        await saveGeneratedText(user!, title, data.aiResponse, text, gradeLevel, language);
+        await saveGeneratedText(user!, savedTextClass);
+        const newResponse = savedTextClass.toObject();
+        console.log("JSON: ", newResponse);
+        onSaveResponse(newResponse);
 
         setGenerated(true);
         onGenerate();
