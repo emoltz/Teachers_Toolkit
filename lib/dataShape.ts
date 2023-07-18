@@ -1,11 +1,14 @@
+import {FieldValue, serverTimestamp} from "@firebase/firestore";
+
 export interface SavedText {
-    id: number;
+    id: string;
     uid: string;
-    text: string;
-    date: Date;
+    generatedText: string;
+    originalText: string;
+    date: FieldValue;
     title: string;
-    gradeLevel: string; // TODO multiple at a time?
-    language: string; // TODO multiple?
+    gradeLevel: string;
+    language: string;
     notes: string;
     saved: boolean; // I can save everything automatically, but save it to their account if they choose
     archived: boolean; // soft deletion (so they can undo)
@@ -15,22 +18,16 @@ export interface SavedText {
     timesViewed: number;
 }
 
-export interface ResponseText {
-    responseText: string;
-    gradeLevel: string;
-    language?: string;
-    title?: string;
-}
-
 export class SavedTextClass implements SavedText {
     archived: boolean;
-    date: Date;
+    date: FieldValue;
     gradeLevel: string;
-    id: number;
+    id: string;
     language: string;
     notes: string;
     saved: boolean;
-    text: string;
+    generatedText: string;
+    originalText: string;
     timesDownloaded: number;
     timesEdited: number;
     timesViewed: number;
@@ -41,19 +38,21 @@ export class SavedTextClass implements SavedText {
         uid: string,
         gradeLevel: string,
         language: string,
-        notes: string = "",
-        text: string,
+        generatedText: string,
+        originalText: string,
         title: string = "Untitled",
+        notes: string = "",
     ) {
         // random number for id
-        this.id = Date.now();
+        this.id = (Date.now() * Math.random() * 10000).toString();
         this.uid = uid;
         this.archived = false;
-        this.date = new Date();
+        this.date = serverTimestamp();
         this.gradeLevel = gradeLevel;
         this.language = language;
         this.saved = false;
-        this.text = text;
+        this.generatedText = generatedText;
+        this.originalText = originalText;
 
         // OPTIONAL
         this.title = title;
@@ -65,13 +64,65 @@ export class SavedTextClass implements SavedText {
         this.timesViewed = 0;
     }
 
-    setSaved() {
-        this.saved = true;
+    toggleSaved() {
+        this.saved = !this.saved;
     }
 
-    setArchived() {
-        this.archived = true;
+    toggleArchive() {
+        this.archived = !this.archived;
     }
 
+    setNotes(newNote: string) {
+        this.notes = newNote;
+    }
+
+    addToNotes(note: string) {
+        this.notes += note;
+    }
+
+    toObject() {
+        return {
+            id: this.id,
+            uid: this.uid,
+            archived: this.archived,
+            date: this.date,
+            gradeLevel: this.gradeLevel,
+            language: this.language,
+            saved: this.saved,
+            generatedText: this.generatedText,
+            originalText: this.originalText,
+            title: this.title,
+            notes: this.notes,
+            timesDownloaded: this.timesDownloaded,
+            timesEdited: this.timesEdited,
+            timesViewed: this.timesViewed,
+        }
+    }
+}
+
+export class User {
+    uid: string;
+    email: string;
+    displayName: string;
+    photoURL: string;
+
+    // @ts-ignore
+    constructor(uid, email, displayName, photoURL) {
+        this.uid = uid;
+        this.email = email;
+        this.displayName = displayName;
+        this.photoURL = photoURL;
+    }
+
+    toObject() {
+        return {
+            uid: this.uid,
+            email: this.email,
+            displayName: this.displayName,
+            photoURL: this.photoURL,
+        }
+
+
+    }
 
 }

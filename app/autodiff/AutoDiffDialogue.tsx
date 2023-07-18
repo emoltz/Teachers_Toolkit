@@ -4,16 +4,20 @@ import {Button} from "@/components/ui/button";
 import {ChangeEvent, useState} from "react";
 import Spacer3 from "@/components/layouts/Spacer3";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
-import {ResponseText} from '@/lib/dataShape';
+import {SavedText, SavedTextClass} from '@/lib/dataShape';
 import {Icons} from '@/components/ui/icons';
 import {Input} from "@/components/ui/input";
+import {auth, saveGeneratedText} from "@/lib/firebase";
+import {User} from "@firebase/auth";
+import {useCurrentUser} from "@/lib/hooks";
 
 interface Props {
-    onSaveResponse: (response: ResponseText) => void;
+    onSaveResponse: (response: SavedText) => void;
     onGenerate: () => void;
 }
 
 export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
+    const {user, loading} = useCurrentUser();
     const [text, setText] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [response, setResponse] = useState<string>('');
@@ -28,6 +32,7 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
     }
     const handleSubmit = async (event: any) => {
         event.preventDefault();
+        const user: User | null = await auth.currentUser;
         setGenerating(true);
         const response = await fetch('/api/openai', {
             method: 'POST',
@@ -44,13 +49,20 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
         const data = await response.json();
         setResponse(data.aiResponse);
         setGenerating(false);
-        const newResponse: ResponseText = {
-            responseText: data.aiResponse,
-            gradeLevel: gradeLevel,
-            language: language,
-            title: title ? title : "Untitled",
-        };
+        const savedTextClass: SavedTextClass = new SavedTextClass(
+            user!.uid,
+            gradeLevel,
+            language,
+            data.aiResponse,
+            text,
+            title
+        );
+
+        await saveGeneratedText(user!, savedTextClass);
+        const newResponse = savedTextClass.toObject();
+        console.log("JSON: ", newResponse);
         onSaveResponse(newResponse);
+
         setGenerated(true);
         onGenerate();
     }
@@ -179,7 +191,7 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
                 // NOT GENERATED
                 <div className={"text-center items-center justify-center space-x-2"}>
                     <Button
-                        disabled={generating}
+                        disabled={generating || text.trim() === ''}
                         onClick={handleSubmit}
                     >
                         <div

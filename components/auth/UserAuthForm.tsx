@@ -14,7 +14,7 @@ import {
     User,
     UserCredential
 } from "@firebase/auth";
-import {auth} from "@/lib/firebase";
+import {auth, checkIfUserInDatabase, saveUserToFirestore} from "@/lib/firebase";
 import {GoogleAuthProvider} from "firebase/auth";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -27,16 +27,17 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
     const [password, setPassword] = useState('');
     const [regMode, setRegMode] = useState(false);
 
-    // for google auth
-
     async function signInWithGoogle() {
         console.log("signing in with google")
         if (typeof window !== 'undefined' && auth!) {
             const provider: GoogleAuthProvider = new GoogleAuthProvider();
             const result: UserCredential = await signInWithPopup(auth, provider);
             const user: User = result.user;
-            // TODO save to database
+            const isNewUser: boolean = await checkIfUserInDatabase(user);
 
+            if (user && isNewUser) {
+                await saveUserToFirestore(user);
+            }
         }
     }
 
@@ -160,7 +161,7 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
                                 </div>
                             </div>
                             <Button variant="outline" type="button" disabled={isLoading}
-                             onClick={signInWithGoogle}>
+                                    onClick={signInWithGoogle}>
                                 {isLoading ? (
                                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin"/>
                                 ) : (

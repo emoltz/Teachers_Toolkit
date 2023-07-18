@@ -8,10 +8,13 @@ import Spacer3 from "@/components/layouts/Spacer3";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
-import {ResponseText} from "@/lib/dataShape";
+import {SavedText} from "@/lib/dataShape";
+import {useCurrentUser} from "@/lib/hooks";
+import {setGeneratedTextToSaved} from "@/lib/firebase";
 
 export default function page() {
-    const [savedResponses, setSavedResponses] = useState<ResponseText[]>([]);
+    const {user, loading} = useCurrentUser();
+    const [savedResponses, setSavedResponses] = useState<SavedText[]>([]);
     const [generated, setGenerated] = useState<boolean>(false);
 
     return (
@@ -19,8 +22,9 @@ export default function page() {
             <TwoColumnLayout
                 column1={
                     <Column1
-                        onSaveResponse={(newResponse: ResponseText) => setSavedResponses(prevResponses => [...prevResponses, newResponse])}
+                        onSaveResponse={(newResponse: SavedText) => setSavedResponses(prevResponses => [...prevResponses, newResponse])}
                         onGenerate={(generated: boolean) => setGenerated(generated)}
+                        loading={loading}
                     />
                 }
                 column2={<Column2
@@ -32,11 +36,12 @@ export default function page() {
 }
 
 interface Column1Props {
-    onSaveResponse: (response: ResponseText) => void;
+    onSaveResponse: (response: SavedText) => void;
     onGenerate: (generated: boolean) => void;
+    loading: boolean;
 }
 
-const Column1 = ({onSaveResponse, onGenerate}: Column1Props) => {
+const Column1 = ({onSaveResponse, onGenerate, loading}: Column1Props) => {
     return (
         <>
             <div className={"text-center"}>
@@ -66,11 +71,20 @@ const Column1 = ({onSaveResponse, onGenerate}: Column1Props) => {
 }
 
 interface Column2Props {
-    savedResponses: ResponseText[];
+    savedResponses: SavedText[];
     generated: boolean;
 }
 
 const Column2 = ({savedResponses, generated}: Column2Props) => {
+    const {user, loading} = useCurrentUser();
+    const saveSingleResponseHandler = async (savedText: SavedText) => {
+        if (!user) {
+            console.warn("No user. Source: ", "/auto-diff/page.tsx")
+            return;
+        }
+        await setGeneratedTextToSaved(user, savedText);
+    }
+
     return (
         <>
             <div className={"text-center"}>
@@ -100,17 +114,26 @@ const Column2 = ({savedResponses, generated}: Column2Props) => {
                     className="w-full"
                     defaultValue={"item-1"}
                 >
-                    {savedResponses.map((response: ResponseText, index: number) => (
-                        <AccordionItem value={index.toString()}>
+                    {savedResponses.map((response: SavedText, index: number) => (
+                        <AccordionItem value={index.toString()}
+                                       key={index}
+                        >
                             <AccordionTrigger>
-                                {response.title} | {response.gradeLevel}
+                                {response.title} | {response.gradeLevel} | {response.id}
                             </AccordionTrigger>
                             <AccordionContent>
-                                {response.responseText}
+                                {response.generatedText}
                                 <Spacer3/>
                                 <div className={"text-center"}>
                                     <Button
+                                        disabled={loading}
+                                        onClick={() => {
+                                            saveSingleResponseHandler(response).then( () => {
+
+                                            })
+                                        }}
                                     >
+                                        {/*TODO add unsave button option*/}
                                         Save
                                     </Button>
                                     <Button
@@ -126,23 +149,23 @@ const Column2 = ({savedResponses, generated}: Column2Props) => {
                     ))}
                 </Accordion>
                 {/*<div className={"pb-2"}/>*/}
-                {generated ?
-                    <>
-                        <div className={"p-3 flex text-center items-center justify-center space-x-2"}>
-
-                            <Button
-
-                            >
-                                Save All
-                            </Button>
-                            <Button
-                                variant={"outline"}
-                            >
-                                Download All
-                            </Button>
-                        </div>
-                    </>
-                    :
+                {!generated &&
+                    // <>
+                    //     <div className={"p-3 flex text-center items-center justify-center space-x-2"}>
+                    //
+                    //         <Button
+                    //
+                    //         >
+                    //             Save All
+                    //         </Button>
+                    //         <Button
+                    //             variant={"outline"}
+                    //         >
+                    //             Download All
+                    //         </Button>
+                    //     </div>
+                    // </>
+                    // :
                     <div className={"text-gray-600 italic border"}>
                         Start generating to see your recent generations here.
 

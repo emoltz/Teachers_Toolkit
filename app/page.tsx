@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card"
 import {Separator} from "@/components/ui/separator";
 import Image from "next/image";
 
@@ -15,7 +15,7 @@ interface Tool {
 export default function Home() {
     const tools: Tool[] = [
         {
-            name: "AutoDiff",
+            name: "Auto Differentiator",
             path: "/autodiff",
             description: "Automatically scaffold text to a lower grade level.",
             disabled: false,
@@ -39,6 +39,7 @@ export default function Home() {
     return (
         <>
 
+
             <div className={"p-5"}>
                 {/*Heading */}
                 <h1 className={"text-3xl font-sans text-gray-800"}>
@@ -59,8 +60,19 @@ export default function Home() {
                         <Link href={tool.path} key={index}>
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>{tool.name}</CardTitle>
-                                    <CardDescription>{tool.description}</CardDescription>
+                                    <CardTitle>
+                                        <div>
+                                            {tool.name}
+                                        </div>
+                                    </CardTitle>
+                                    <CardDescription>{tool.description}
+                                        {tool.disabled &&
+
+                                            <div className="pt-1 text-red-400 font-semibold">
+                                                Coming Soon
+                                            </div>
+                                        }
+                                    </CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <Image src={tool.image} alt={"A robot"}
@@ -68,19 +80,18 @@ export default function Home() {
                                            height={500}
                                            priority
                                            className={"rounded-md object-cover"}
-
                                     />
 
                                 </CardContent>
-                                {tool.disabled &&
+                                {/*{tool.disabled &&*/}
 
 
-                                    <CardFooter>
-                                        <div className={"text-gray-600"}>
-                                            Coming soon!
-                                        </div>
-                                    </CardFooter>
-                                }
+                                {/*    <CardFooter>*/}
+                                {/*        <div className={"text-gray-600"}>*/}
+                                {/*            Coming soon!*/}
+                                {/*        </div>*/}
+                                {/*    </CardFooter>*/}
+                                {/*}*/}
                             </Card>
 
                         </Link>
