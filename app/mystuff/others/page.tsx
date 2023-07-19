@@ -12,7 +12,6 @@ import Link from "next/link";
 import UserAuthForm from "@/components/auth/UserAuthForm";
 
 export default function page() {
-
     const {user, loading} = useCurrentUser();
     const [myGenerations, setMyGenerations] = useState<SavedText[]>([]);
     useEffect(() => {

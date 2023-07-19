@@ -10,6 +10,7 @@ import {
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {Button} from "@/components/ui/button";
 import {tailwindStyles} from "@/lib/styles";
+import {useToast} from "@/components/ui/use-toast"
 
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
 
 // TODO notes, original text
 export default function MyStuffCard({title, genText, gradeLevel}: Props) {
+    const {toast} = useToast();
     return (
         <Dialog>
             <DialogTrigger>
@@ -67,14 +69,21 @@ export default function MyStuffCard({title, genText, gradeLevel}: Props) {
                             {genText}
                         </ScrollArea>
                         <div className="text-center flex gap-3 pt-5 justify-end">
-
                             <Button
                                 variant={"outline"}
                             >
                                 Unsave
                             </Button>
-                            <Button>
-                                Download
+                            <Button
+                                onClick={() => {
+                                    navigator.clipboard.writeText(genText).then(() => {
+                                        toast({
+                                            title: "Copied to clipboard"
+                                        })
+                                    })
+                                }}
+                            >
+                                Copy
                             </Button>
                         </div>
                     </DialogDescription>

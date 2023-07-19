@@ -11,6 +11,7 @@ import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/c
 import {SavedText} from "@/lib/dataShape";
 import {useCurrentUser} from "@/lib/hooks";
 import {setGeneratedTextToSaved} from "@/lib/firebase";
+import {useToast} from "@/components/ui/use-toast"
 
 export default function page() {
     const {user, loading} = useCurrentUser();
@@ -76,6 +77,7 @@ interface Column2Props {
 }
 
 const Column2 = ({savedResponses, generated}: Column2Props) => {
+    const {toast} = useToast();
     const {user, loading} = useCurrentUser();
     const saveSingleResponseHandler = async (savedText: SavedText) => {
         if (!user) {
@@ -119,7 +121,7 @@ const Column2 = ({savedResponses, generated}: Column2Props) => {
                                        key={index}
                         >
                             <AccordionTrigger>
-                                {response.title} | {response.gradeLevel} | {response.id}
+                                {response.title} | {response.gradeLevel}
                             </AccordionTrigger>
                             <AccordionContent>
                                 {response.generatedText}
@@ -129,7 +131,10 @@ const Column2 = ({savedResponses, generated}: Column2Props) => {
                                         disabled={loading}
                                         onClick={() => {
                                             saveSingleResponseHandler(response).then(() => {
-
+                                                toast({
+                                                    title: "Saved to your stuff",
+                                                    description: "Go to your profile to view"
+                                                })
                                             })
                                         }}
                                     >
