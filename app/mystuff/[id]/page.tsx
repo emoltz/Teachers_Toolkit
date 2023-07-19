@@ -14,18 +14,25 @@ export default function Page({params}: { params: { id: string } }) {
     const {user, loading} = useCurrentUser();
     const id = params.id;
     const [generation, setGeneration] = useState<SavedText>()
+    const [titleInput, setTitleInput] = useState<string | undefined>("");
 
 
     useEffect(() => {
         if (user) {
-            getGenerationById(user!, id).then(setGeneration)
-                .catch(error => {
-                    console.warn("Error fetching generation (mystuff/[id]) ", error);
-                });
+            getGenerationById(user!, id)
+                .then((gen) => {
+                    setGeneration(gen);
+                    setTitleInput(gen?.title);
+                })
+
         }
     }, [id, user])
     if (loading) {
         return <Loading/>
+    }
+
+    const handleTitleInputChange = (e: any) => {
+        setTitleInput(e.target.value);
     }
 
     return (
@@ -35,12 +42,8 @@ export default function Page({params}: { params: { id: string } }) {
                     <div className={cn(tailwindStyles.heading1, "pb-2")}>
                         <Input
                             type={"text"}
-                            value={generation.title}
-                            onChange={
-                                () => {
-                                    console.log("changed");
-                                }}
-
+                            value={titleInput}
+                            onChange={handleTitleInputChange}
                         />
                     </div>
                     <div className={"text-muted-foreground p-2 bg-slate-100"}>
