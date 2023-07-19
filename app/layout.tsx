@@ -5,11 +5,10 @@ import {Analytics} from '@vercel/analytics/react';
 import {NavBar} from "@/app/NavBar";
 import {ReactNode} from "react";
 import Footer from "@/components/Footer";
+import {Toaster} from "@/components/ui/toaster"
 
 
 const inter = Inter({subsets: ['latin']})
-// TODO add a footer
-// TODO toasts
 // TODO add testing suite early
 export const metadata: Metadata = {
     title: 'Teacher\'s Toolkit',
@@ -23,16 +22,16 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-
-
             <body className={inter.className}>
 
             <NavBar/>
-            <div
+            <main
                 className={"p-3"}
             >
                 {children}
-            </div>
+            </main>
+            <Toaster/>
+
 
             <Footer/>
             </body>
