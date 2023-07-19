@@ -9,7 +9,9 @@ import {Icons} from '@/components/ui/icons';
 import {Input} from "@/components/ui/input";
 import {auth, saveGeneratedText} from "@/lib/firebase";
 import {User} from "@firebase/auth";
-import {useCurrentUser} from "@/lib/hooks";
+import {Switch} from "@/components/ui/switch"
+import mammoth from 'mammoth';
+
 
 interface Props {
     onSaveResponse: (response: SavedText) => void;
@@ -17,7 +19,6 @@ interface Props {
 }
 
 export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
-    const {user, loading} = useCurrentUser();
     const [text, setText] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [response, setResponse] = useState<string>('');
@@ -25,6 +26,7 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
     const [generating, setGenerating] = useState<boolean>(false);
     const [gradeLevel, setGradeLevel] = useState<string>("");
     const [language, setLanguage] = useState<string>("");
+    const [fileUpload, setFileUpload] = useState<boolean>(false);
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setText(e.target.value)
@@ -67,6 +69,24 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
         onGenerate();
     }
 
+    const handleFileUpload = (event: any): void => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            const arrayBuffer = event.target?.result as ArrayBuffer;
+
+            mammoth.extractRawText({arrayBuffer: arrayBuffer})
+                .then(function (result) {
+                    const text = result.value; // The extracted text
+                    setText(text);
+                    setFileUpload(!fileUpload);
+                })
+        }
+
+        reader.readAsArrayBuffer(file);
+    }
+
     return (
         <>
             <div className="grid w-full gap-2">
@@ -77,17 +97,46 @@ export default function AutoDiffDialogue({onSaveResponse, onGenerate}: Props) {
                         setTitle(e.target.value);
                     }}
                 />
-                <Textarea
-                    style={{height: '200px'}}
-                    placeholder={generating ? "Generating..." : "Enter text to scaffold."}
-                    onChange={handleChange}
-                    value={generated ? response : text}
-                    disabled={generated || generating}
-                />
+                {fileUpload ?
+                    <>
+                        <div className={"cursor-pointer"}>
+
+                            <Input id={"file"}
+                                   type={"file"}
+                                   onChange={handleFileUpload}
+                            />
+                        </div>
+                    </>
+                    :
+
+                    <Textarea
+                        style={{height: '200px'}}
+                        placeholder={generating ? "Generating..." : "Enter text to scaffold."}
+                        onChange={handleChange}
+                        value={generated ? response : text}
+                        disabled={generated || generating}
+                    />
+                }
             </div>
             <Spacer3/>
 
+            <div className={"flex justify-center pb-3"}>
+
+                <div className={"pr-1 text-muted-foreground"}>
+                    Upload File
+                </div>
+
+                <Switch
+                    onCheckedChange={() => {
+                        setFileUpload(!fileUpload)
+                    }}
+                    checked={fileUpload}
+
+                />
+            </div>
             <div className={"flex text-center items-center justify-center space-x-2"}>
+
+
                 <Select
                     onValueChange={(value) => {
                         setGradeLevel(value);
