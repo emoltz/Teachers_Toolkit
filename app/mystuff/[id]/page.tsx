@@ -10,6 +10,8 @@ import TextEditor from "@/app/mystuff/[id]/TextEditor";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {useToast} from "@/components/ui/use-toast"
+import {ArrowArcLeft} from "@phosphor-icons/react";
+import Link from "next/link";
 
 
 export default function Page({params}: { params: { id: string } }) {
@@ -54,6 +56,15 @@ export default function Page({params}: { params: { id: string } }) {
 
     return (
         <>
+            <Link href={"/mystuff"}>
+
+                <Button
+                    variant={"ghost"}
+                >
+                    <ArrowArcLeft size={16}/>
+                    Back
+                </Button>
+            </Link>
             {generation ?
 
                 <div className={"p-5"}>
