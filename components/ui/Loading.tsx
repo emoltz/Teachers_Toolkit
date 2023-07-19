@@ -12,3 +12,17 @@ export default function Loading() {
         </div>
     )
 }
+
+export function LoadingText(){
+    return (
+        <div className="flex flex-col space-y-4">
+            <Skeleton className="h-12 w-full"/> {/* Title */}
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-full"/> {/* Paragraph line */}
+                <Skeleton className="h-4 w-3/4"/> {/* Paragraph line */}
+                <Skeleton className="h-4 w-full"/> {/* Paragraph line */}
+                <Skeleton className="h-4 w-1/2"/> {/* Paragraph line */}
+            </div>
+        </div>
+    )
+}

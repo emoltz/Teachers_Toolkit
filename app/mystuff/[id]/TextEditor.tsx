@@ -1,36 +1,31 @@
 import {Editor, EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 
+// TODO add menu bar?
+// TODO ai autocomplete?
 
 interface Props {
     text: string;
+    onTextChange: (newText: string) => void;
 }
 
-export default function TextEditor({text}: Props) {
+export default function TextEditor({text, onTextChange}: Props) {
     const editor: Editor | null = useEditor({
         extensions: [
             StarterKit,
         ],
-        content: text
+        content: text,
+        onUpdate: () => {
+            if (editor) {
+                const newText = editor.getText();
+                onTextChange(newText);
+            }
+        }
     })
 
     return (
         <>
-            {/*<Menubar>*/}
-            {/*    <MenubarMenu>*/}
-            {/*        <MenubarTrigger>File</MenubarTrigger>*/}
-            {/*        <MenubarContent>*/}
-            {/*            <MenubarItem>*/}
-            {/*                New Tab <MenubarShortcut>⌘T</MenubarShortcut>*/}
-            {/*            </MenubarItem>*/}
-            {/*            <MenubarItem>New Window</MenubarItem>*/}
-            {/*            <MenubarSeparator/>*/}
-            {/*            <MenubarItem>Share</MenubarItem>*/}
-            {/*            <MenubarSeparator/>*/}
-            {/*            <MenubarItem>Print</MenubarItem>*/}
-            {/*        </MenubarContent>*/}
-            {/*    </MenubarMenu>*/}
-            {/*</Menubar>*/}
+
 
             <EditorContent editor={editor}/>
         </>

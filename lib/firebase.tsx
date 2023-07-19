@@ -34,12 +34,15 @@ let app;
 let auth: Auth;
 let analytics: Analytics;
 let provider: GoogleAuthProvider;
+let db: Firestore;
 
 if (typeof window !== 'undefined') {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     analytics = getAnalytics(app);
     provider = new GoogleAuthProvider();
+    db = getFirestore();
+
 }
 
 export {app, auth, analytics, provider};
@@ -157,3 +160,14 @@ export async function getGenerationById(user: User | null, id: string): Promise<
     return docData;
 }
 
+export async function updateGeneration(user: User | null, id: string, updatedGeneration: SavedText): Promise<void> {
+    if (!user) {
+        firebaseNoUserWarning();
+        return;
+    }
+    const docRef = doc(collection(db, 'Users'), user.uid, 'SavedText', id);
+    await updateDoc(docRef, {
+        title: updatedGeneration.title,
+        generatedText: updatedGeneration.generatedText,
+    })
+}
