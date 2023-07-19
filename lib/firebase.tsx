@@ -95,8 +95,8 @@ export async function setGeneratedTextToSaved(user: User, savedText: SavedText) 
     });
 }
 
-export async function getAllGenerations(user: User | null):Promise<SavedText[]>{
-    if (!user){
+export async function getAllGenerations(user: User | null): Promise<SavedText[]> {
+    if (!user) {
         firebaseNoUserWarning();
         return [];
     }
@@ -105,7 +105,7 @@ export async function getAllGenerations(user: User | null):Promise<SavedText[]>{
     const db = getFirestore();
     const q = query(collection(doc(collection(db, 'Users'), user.uid), 'SavedText'));
     const querySnapshot = await getDocs(q);
-    querySnapshot.forEach( (doc) => {
+    querySnapshot.forEach((doc) => {
         const data: SavedText = doc.data() as SavedText;
         data.id = doc.id;
         savedTexts.push(data);
@@ -114,7 +114,7 @@ export async function getAllGenerations(user: User | null):Promise<SavedText[]>{
 }
 
 
-export async function getSavedGenerations(user: User | null):Promise<SavedText[]> {
+export async function getSavedGenerations(user: User | null): Promise<SavedText[]> {
     if (!user) {
         firebaseNoUserWarning();
         return [];
@@ -131,3 +131,29 @@ export async function getSavedGenerations(user: User | null):Promise<SavedText[]
     });
     return savedTexts;
 }
+
+export async function getGenerationById(user: User | null, id: string): Promise<SavedText | undefined> {
+    if (!user) {
+        firebaseNoUserWarning();
+        return;
+    }
+    const db: Firestore = getFirestore();
+
+    const q = query(collection(doc(collection(db, 'Users'), user.uid), 'SavedText'), where('id', '==', id));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+        console.log("error: no document exists");
+        return;
+    }
+    let docData = null;
+    querySnapshot.forEach((doc) => {
+        docData = doc.data() as SavedText;
+    });
+
+    if (docData === null) {
+        throw new Error("No document found with the given id");
+    }
+
+    return docData;
+}
+

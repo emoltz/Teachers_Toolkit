@@ -46,10 +46,10 @@ export default function page() {
                 {myGenerations.map((gen: SavedText, index: number) => (
                     <div key={index}>
                         <MyStuffCard
-
                             title={gen.title}
                             genText={gen.generatedText}
                             gradeLevel={gen.gradeLevel}
+                            id={gen.id}
 
                         />
                     </div>

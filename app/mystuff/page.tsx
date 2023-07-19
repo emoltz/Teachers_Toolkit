@@ -17,7 +17,7 @@ export default function page() {
         if (user) {
             getSavedGenerations(user).then(setMyGenerations);
         }
-    }, [user])
+    }, [user, loading])
 
     if (loading || !myGenerations) {
         return (
@@ -41,6 +41,7 @@ export default function page() {
                         title={gen.title}
                         genText={gen.generatedText}
                         gradeLevel={gen.gradeLevel}
+                        id={gen.id}
 
                     />
                 ))}
