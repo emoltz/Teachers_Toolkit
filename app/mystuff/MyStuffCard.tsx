@@ -1,3 +1,4 @@
+"use client";
 import {Card, CardContent, CardHeader,} from "@/components/ui/card"
 import {
     Dialog,
@@ -12,6 +13,8 @@ import {Button} from "@/components/ui/button";
 import {tailwindStyles} from "@/lib/styles";
 import {useToast} from "@/components/ui/use-toast"
 import Link from "next/link";
+import {archiveGeneration} from "@/lib/firebase";
+import {useCurrentUser} from "@/lib/hooks";
 
 
 interface Props {
@@ -23,7 +26,9 @@ interface Props {
 
 // TODO notes, original text
 export default function MyStuffCard({title, genText, gradeLevel, id}: Props) {
+    const {user, loading} = useCurrentUser();
     const {toast} = useToast();
+
     return (
         <Dialog>
             <DialogTrigger>
@@ -82,6 +87,24 @@ export default function MyStuffCard({title, genText, gradeLevel, id}: Props) {
                                 }}
                             >
                                 Copy
+                            </Button>
+                            <Button
+                                onClick={async () => {
+                                    await archiveGeneration(user, id).then(() => {
+                                        toast({
+                                            title: "Moved to Other"
+                                        })
+                                    })
+                                        .catch((e) => {
+                                            toast({
+                                                title: "Error",
+                                            })
+                                        })
+
+                                }}
+                                variant={"destructive"}
+                            >
+                                Archive
                             </Button>
                             <Link
                                 href={`/mystuff/${id}`}

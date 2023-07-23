@@ -102,9 +102,9 @@ export function NavBar() {
                         <NavigationMenuItem>
                             <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
                             <NavigationMenuContent
-                                // className={"origin-top-right right-0"}
+
                             >
-                                <ul className={"flex-auto w-[200px] "}>
+                                <ul className={"flex-auto w-[230px] "}>
                                     {tools.map((tool: Tool) => {
                                         return (
                                             <div key={tool.name}>
@@ -122,7 +122,14 @@ export function NavBar() {
                                             </div>
                                         )
                                     })}
+                                    <Separator/>
+                                    <ListItem
+                                        title={"My Stuff"}
+                                        href={"/mystuff"}>
+                                        View your saved content
+                                    </ListItem>
                                 </ul>
+
                             </NavigationMenuContent>
                         </NavigationMenuItem>
                     </NavigationMenu>
@@ -169,9 +176,9 @@ const ListItem = React.forwardRef<
                     {...props}
                 >
                     <div className="text-sm font-medium leading-none">{title}</div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                    <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                         {children}
-                    </p>
+                    </div>
                 </a>
             </NavigationMenuLink>
         </li>

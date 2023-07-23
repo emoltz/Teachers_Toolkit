@@ -47,8 +47,11 @@ if (typeof window !== 'undefined') {
 
 export {app, auth, analytics, provider};
 
-function firebaseNoUserWarning(): void {
-    console.warn("No user. Source: ", "/lib/firebase.tsx")
+function firebaseNoUserWarning(extra = ""): void {
+    if (extra != "") {
+        extra = " | " + extra;
+    }
+    console.warn("No user. Source: ", "/lib/firebase.tsx", extra);
 }
 
 export async function saveUserToFirestore(user: User) {
@@ -170,4 +173,33 @@ export async function updateGeneration(user: User | null, id: string, updatedGen
         title: updatedGeneration.title,
         generatedText: updatedGeneration.generatedText,
     })
+}
+
+export async function isItSaved(user: User | null, id: string): Promise<boolean> {
+    if (!user) {
+        firebaseNoUserWarning("isItSaved");
+        return false;
+    }
+    const db = getFirestore();
+    const docRef = doc(db, 'Users', user.uid, 'SavedText', id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        return data && data.saved === true;
+    }
+    else{
+        return false;
+    }
+}
+
+export async function archiveGeneration(user: User | null, id: string): Promise<void> {
+    if (!user) {
+        firebaseNoUserWarning("archive generation");
+        return;
+    }
+    const docRef = doc(collection(db, 'Users'), user.uid, 'SavedText', id);
+
+    await updateDoc(docRef, {
+        saved: false
+    });
 }
