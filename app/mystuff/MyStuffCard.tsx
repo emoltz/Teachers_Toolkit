@@ -24,6 +24,7 @@ interface Props {
 // TODO notes, original text
 export default function MyStuffCard({title, genText, gradeLevel, id}: Props) {
     const {toast} = useToast();
+
     return (
         <Dialog>
             <DialogTrigger>
@@ -73,11 +74,6 @@ export default function MyStuffCard({title, genText, gradeLevel, id}: Props) {
                         <div className="text-center flex gap-3 pt-5 justify-end">
                             <Button
                                 variant={"outline"}
-                            >
-                                Unsave
-                            </Button>
-                            <Button
-                                variant={"outline"}
                                 onClick={() => {
                                     navigator.clipboard.writeText(genText).then(() => {
                                         toast({
@@ -95,7 +91,7 @@ export default function MyStuffCard({title, genText, gradeLevel, id}: Props) {
                                 <Button
 
                                 >
-                                    Details
+                                    Edit
                                 </Button>
                             </Link>
                         </div>
