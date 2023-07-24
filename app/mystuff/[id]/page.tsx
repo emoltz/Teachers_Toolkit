@@ -72,6 +72,10 @@ export default function Page({params}: { params: { id: string } }) {
                         <div className={tailwindStyles.label}>
                             {generation.gradeLevel}
                         </div>
+                        <div className={tailwindStyles.label}>
+                            {/*@ts-ignore*/}
+                            generated {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: '2-digit' }).format(generation.date.toDate())}
+                        </div>
                         <div className={cn(tailwindStyles.label, "flex")}>
                             status:
                             {

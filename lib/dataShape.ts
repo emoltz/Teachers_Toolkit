@@ -1,4 +1,4 @@
-import {FieldValue, serverTimestamp} from "@firebase/firestore";
+import {FieldValue, serverTimestamp, Timestamp} from "@firebase/firestore";
 
 export interface Tool {
     name: string;
@@ -13,7 +13,7 @@ export interface SavedText {
     uid: string;
     generatedText: string;
     originalText: string;
-    date: FieldValue;
+    date: Timestamp | FieldValue;
     title: string;
     gradeLevel: string;
     language: string;
@@ -28,7 +28,7 @@ export interface SavedText {
 
 export class SavedTextClass implements SavedText {
     archived: boolean;
-    date: FieldValue;
+    date: Timestamp | FieldValue;
     gradeLevel: string;
     id: string;
     language: string;
