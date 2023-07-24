@@ -186,8 +186,7 @@ export async function isItSaved(user: User | null, id: string): Promise<boolean>
     if (docSnap.exists()) {
         const data = docSnap.data();
         return data && data.saved === true;
-    }
-    else{
+    } else {
         return false;
     }
 }
@@ -202,4 +201,22 @@ export async function archiveGeneration(user: User | null, id: string): Promise<
     await updateDoc(docRef, {
         saved: false
     });
+}
+
+export async function toggleSavedGeneration(user: User | null, id: string): Promise<void> {
+    if (!user) {
+        firebaseNoUserWarning("toggle saved generation");
+        return;
+    }
+    const docRef = doc(collection(db, 'Users'), user.uid, 'SavedText', id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data) {
+            await updateDoc(docRef, {
+                saved: !data.saved
+            });
+        }
+    }
 }

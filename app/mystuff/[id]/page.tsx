@@ -1,6 +1,6 @@
 "use client";
 import {useEffect, useState} from 'react';
-import {getGenerationById, updateGeneration} from "@/lib/firebase";
+import {getGenerationById, isItSaved, toggleSavedGeneration, updateGeneration} from "@/lib/firebase";
 import {LoadingText} from "@/components/ui/Loading";
 import {useCurrentUser} from "@/lib/hooks";
 import {SavedText} from "@/lib/dataShape";
@@ -22,18 +22,18 @@ export default function Page({params}: { params: { id: string } }) {
     const [generation, setGeneration] = useState<SavedText>()
     const [titleInput, setTitleInput] = useState<string | undefined>("");
     const [updatedText, setUpdatedText] = useState<string | undefined>("");
-
+    const [isSaved, setIsSaved] = useState<boolean>(true);
 
     useEffect(() => {
         if (user) {
-            getGenerationById(user!, id)
+            getGenerationById(user, id)
                 .then((gen) => {
                     setGeneration(gen);
                     setTitleInput(gen?.title);
                 })
-
+            isItSaved(user, id).then(setIsSaved);
         }
-    }, [id, user])
+    }, [id, user, isSaved])
     if (loading) {
         return <LoadingText/>
     }
@@ -68,8 +68,54 @@ export default function Page({params}: { params: { id: string } }) {
             {generation ?
 
                 <div className={"p-5"}>
-                    <div className={"text-muted-foreground text-sm p-2"}>
-                        {generation.gradeLevel}
+                    <div className="flex justify-between">
+                        <div className={tailwindStyles.label}>
+                            {generation.gradeLevel}
+                        </div>
+                        <div className={cn(tailwindStyles.label, "flex")}>
+                            status:
+                            {
+                                isSaved ?
+                                    <>
+                                        <div className={"text-green-600 pl-1 font-semibold bg-gray-100 rounded-md"}>
+                                            <button
+                                                onClick={() => {
+                                                    toggleSavedGeneration(user, id).then(() => {
+                                                        toast({
+                                                            title: "Removed from to my stuff!"
+                                                        })
+                                                        setIsSaved(false)
+                                                    })
+
+                                                }}
+                                            >
+
+                                                in my stuff
+                                            </button>
+                                        </div>
+
+                                    </>
+                                    :
+                                    <>
+                                        <div className={"text-red-600 pl-1 font-semibold bg-gray-100 rounded-md"}>
+                                            <button
+                                                onClick={() => {
+                                                    toggleSavedGeneration(user, id).then(() => {
+                                                        toast({
+                                                            title: "Added to my stuff!"
+                                                        })
+                                                        setIsSaved(true)
+                                                    })
+                                                }}
+                                            >
+
+                                                not in my stuff
+                                            </button>
+                                        </div>
+                                    </>
+                            }
+
+                        </div>
                     </div>
                     <div className={cn(tailwindStyles.heading1, "pb-2")}>
                         <Input
@@ -85,9 +131,46 @@ export default function Page({params}: { params: { id: string } }) {
                             onTextChange={setUpdatedText}
                         />
                     </div>
-                    <div className={"justify-center flex p-3"}>
+                    <div className={"justify-center flex p-3 gap-3"}>
+                        {/*{*/}
+                        {/*    !isSaved ?*/}
+                        {/*        <>*/}
+                        {/*            <Button*/}
+                        {/*                variant={"ghost"}*/}
+                        {/*                onClick={() => {*/}
+                        {/*                    toggleSavedGeneration(user, id).then(() => {*/}
+                        {/*                        toast({*/}
+                        {/*                            title: "Added to My Stuff!",*/}
+                        {/*                        })*/}
+
+                        {/*                    })*/}
+                        {/*                    setIsSaved(true)*/}
+                        {/*                }}*/}
+                        {/*            >*/}
+                        {/*                Move to My Stuff*/}
+                        {/*            </Button>*/}
+                        {/*        </>*/}
+                        {/*        :*/}
+                        {/*        <>*/}
+                        {/*            <Button*/}
+                        {/*                variant={"destructive"}*/}
+                        {/*                onClick={() => {*/}
+                        {/*                    toggleSavedGeneration(user, id).then(() => {*/}
+                        {/*                        toast({*/}
+                        {/*                            title: "Removed from My Stuff!",*/}
+                        {/*                        })*/}
+                        {/*                    })*/}
+                        {/*                    setIsSaved(false)*/}
+                        {/*                }}*/}
+                        {/*            >*/}
+                        {/*                Remove from My Stuff*/}
+                        {/*            </Button>*/}
+
+                        {/*        </>*/}
+                        {/*}*/}
+
                         <Button
-                            variant={"outline"}
+
                             onClick={() => {
                                 handleSave().then(r => {
                                     toast({
@@ -99,6 +182,7 @@ export default function Page({params}: { params: { id: string } }) {
                         >
                             Save Changes
                         </Button>
+
                     </div>
 
 
