@@ -9,6 +9,7 @@ import MyStuffCard from "@/app/mystuff/MyStuffCard";
 import Link from "next/link";
 import {tailwindStyles} from "@/lib/styles";
 import {ArrowRight} from "@phosphor-icons/react";
+import {cn} from "@/lib/utils";
 
 export default function page() {
     const {user, loading} = useCurrentUser();
@@ -28,10 +29,8 @@ export default function page() {
 
     return (
         <>
-            <div className={tailwindStyles.heading1}>
-                <div className="text-center">
-                    My Stuff
-                </div>
+            <div className={cn(tailwindStyles.heading1, "text-center ")}>
+                My Stuff
             </div>
 
             <div className={tailwindStyles.cardGroup}>
