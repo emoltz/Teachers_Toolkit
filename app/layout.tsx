@@ -3,6 +3,7 @@ import type {Metadata} from 'next'
 import {Inter} from 'next/font/google'
 import {Analytics} from '@vercel/analytics/react';
 import {NavBar} from "@/app/NavBar";
+// import NavBar from "@/app/NavBarNew";
 import {ReactNode} from "react";
 import Footer from "@/components/Footer";
 import {Toaster} from "@/components/ui/toaster"
